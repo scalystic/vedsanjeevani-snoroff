@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+gsap.registerPlugin(ScrollTrigger);
 import Image from "next/image";
 
 // Local image imports for optimal sizing and placeholder generation
@@ -133,7 +134,7 @@ export default function Home() {
     "therapy" | "chakra" | "action"
   >("therapy");
 
-  // Auto-changing hero information tabs (rotates every 4.5s; resets on manual click)
+  // Auto-changing hero information tabs (rotates every 4.5s)
   useEffect(() => {
     const tabs: ("therapy" | "chakra" | "action")[] = [
       "therapy",
@@ -148,45 +149,17 @@ export default function Home() {
       });
     }, 4500);
     return () => clearInterval(interval);
-  }, [activeHeroTab]);
+  }, []);
 
   // Product images mapping
   const productImages = [snoreOffNabhiOil, ingredientsImg, howToUseDropperImg];
 
 
 
-  // GSAP and Locomotive Scroll Animations
+  // GSAP Animations
   useEffect(() => {
-    let locomotiveScroll: { destroy: () => void } | null = null;
-
-    // Initialize locomotive scroll (smooth scroll) dynamically for client side only
-    const initScroll = async () => {
-      try {
-        const LocomotiveScroll = (await import("locomotive-scroll")).default;
-        locomotiveScroll = new LocomotiveScroll({
-          lenisOptions: {
-            wrapper: window,
-            content: document.documentElement,
-            lerp: 0.1,
-            duration: 1.2,
-            orientation: "vertical",
-            gestureOrientation: "vertical",
-            smoothWheel: true,
-            wheelMultiplier: 1,
-            touchMultiplier: 2,
-            infinite: false,
-          },
-        }) as unknown as { destroy: () => void };
-      } catch (e) {
-        console.error("Locomotive Scroll initialization failed", e);
-      }
-    };
-    initScroll();
-
     // Create GSAP Context to handle double-mount in React 19/strict mode
     const ctx = gsap.context(() => {
-      // Register ScrollTrigger
-      gsap.registerPlugin(ScrollTrigger);
 
       // --- ENTRANCE ANIMATIONS (Hero & Header) ---
       const headerTl = gsap.timeline({ defaults: { ease: "power3.out" } });
@@ -265,16 +238,28 @@ export default function Home() {
           "-=0.4",
         )
         .fromTo(
-          ".hero-cta",
-          { y: 25, opacity: 0 },
-          { y: 0, opacity: 1, stagger: 0.1, duration: 0.7 },
-          "-=0.5",
+          ".hero-wellness-pack",
+          { y: 20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.65 },
+          "-=0.45",
         )
         .fromTo(
           ".hero-val-prop",
           { y: 20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.6 },
+          "-=0.45",
+        )
+        .fromTo(
+          ".hero-purchase-console",
+          { y: 22, opacity: 0 },
           { y: 0, opacity: 1, duration: 0.7 },
           "-=0.4",
+        )
+        .fromTo(
+          ".hero-tab-switcher",
+          { y: 18, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.6 },
+          "-=0.35",
         );
 
       // --- SCROLLTRIGGER ANIMATIONS ---
@@ -663,13 +648,6 @@ export default function Home() {
     return () => {
       clearTimeout(timer1);
       clearTimeout(timer2);
-      if (locomotiveScroll) {
-        try {
-          locomotiveScroll.destroy();
-        } catch (e) {
-          console.error("Locomotive Scroll destroy failed", e);
-        }
-      }
       ctx.revert();
     };
   }, []);
@@ -841,16 +819,15 @@ export default function Home() {
       </header>
 
       {/* Mobile Navigation Drawer */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-50 flex md:hidden">
+      <div className={`fixed inset-0 z-50 flex md:hidden ${isMobileMenuOpen ? "pointer-events-auto" : "pointer-events-none"}`}>
           {/* Overlay */}
           <div
             onClick={() => setIsMobileMenuOpen(false)}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
+            className={`fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${isMobileMenuOpen ? "opacity-100" : "opacity-0"}`}
           ></div>
 
           {/* Content */}
-          <div className="relative flex flex-col w-4/5 max-w-sm h-full bg-surface dark:bg-on-surface p-6 shadow-2xl z-10 transition-transform duration-300">
+          <div className={`relative flex flex-col w-4/5 max-w-sm h-full bg-surface dark:bg-on-surface p-6 shadow-2xl z-10 will-change-transform transition-transform duration-300 ease-out ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}>
             <div className="flex justify-between items-center mb-10">
               <Image
                 src={headerLogo}
@@ -901,8 +878,7 @@ export default function Home() {
 
 
           </div>
-        </div>
-      )}
+      </div>
 
       {/* Main Container */}
       <main className="pt-20">
@@ -1028,7 +1004,7 @@ export default function Home() {
             </div>
 
             {/* Wellness Pack Selector */}
-            <div className="mb-6">
+            <div className="hero-wellness-pack mb-6">
               <h3 className="font-label-caps text-[10px] text-on-surface-variant dark:text-secondary-container mb-3 tracking-[0.15em] uppercase font-semibold">
                 CHOOSE YOUR WELLNESS CYCLE :
               </h3>
@@ -1129,7 +1105,7 @@ export default function Home() {
             </div>
 
             {/* Purchase Actions Console */}
-            <div className="flex flex-col gap-4 mb-8 bg-surface-container-low dark:bg-zinc-800/10 p-5 rounded-xl border border-secondary-container/10">
+            <div className="hero-purchase-console flex flex-col gap-4 mb-8 bg-surface-container-low dark:bg-zinc-800/10 p-5 rounded-xl border border-secondary-container/10">
               {/* Shiprocket BUY NOW Button */}
               <button
                 onClick={() => {
@@ -1144,7 +1120,7 @@ export default function Home() {
                   );
                   showToast("Connecting to secure payment gateway...");
                 }}
-                className="hero-cta w-full bg-primary-container hover:bg-primary-container/90 text-black font-extrabold py-4 px-6 flex justify-between items-center cursor-pointer group shadow-md hover:shadow-lg transition-all duration-300 relative rounded-lg border border-primary-container"
+                className="w-full bg-primary-container hover:bg-primary-container/90 text-black font-extrabold py-4 px-6 flex justify-between items-center cursor-pointer group shadow-md hover:shadow-lg transition-all duration-300 relative rounded-lg border border-primary-container"
               >
                 <div className="flex items-center gap-3">
                   <span className="font-button tracking-[0.15em] uppercase text-sm font-extrabold">
@@ -1196,7 +1172,7 @@ export default function Home() {
                       wellnessPack === "buy1" ? "1 Bottle" : "2 Bottles",
                     )
                   }
-                  className="hero-cta flex-1 border border-on-surface dark:border-surface text-on-surface dark:text-surface hover:bg-on-surface hover:text-surface dark:hover:bg-surface dark:hover:text-on-surface py-3 px-6 font-button text-xs uppercase tracking-wider transition-all duration-300 flex justify-center items-center gap-2 cursor-pointer font-bold rounded-lg"
+                  className="flex-1 border border-on-surface dark:border-surface text-on-surface dark:text-surface hover:bg-on-surface hover:text-surface dark:hover:bg-surface dark:hover:text-on-surface py-3 px-6 font-button text-xs uppercase tracking-wider transition-all duration-300 flex justify-center items-center gap-2 cursor-pointer font-bold rounded-lg"
                 >
                   ADD TO CART
                 </button>
@@ -1204,7 +1180,7 @@ export default function Home() {
             </div>
 
             {/* Interactive Wisdom Tab Switcher */}
-            <div className="mt-4 pt-6 border-t border-secondary-container/10">
+            <div className="hero-tab-switcher mt-4 pt-6 border-t border-secondary-container/10">
               <div className="flex border-b border-secondary-container/10 mb-4 overflow-x-auto scrollbar-none">
                 <button
                   onClick={() => setActiveHeroTab("therapy")}
@@ -2128,7 +2104,6 @@ export default function Home() {
               <div className="w-12 h-px bg-primary-container mx-auto"></div>
             </div>
 
-            {/* Ritual Products Carousel */}
             {(() => {
               const ritualProducts = [
                 {
@@ -2162,95 +2137,99 @@ export default function Home() {
                   qty: "25g Jar",
                 },
               ];
+
+              const ProductCard = ({ p }: { p: typeof ritualProducts[0] }) => (
+                <div className="rec-card group border border-secondary-container/20 dark:border-zinc-800 p-6 flex flex-col items-center text-center hover:border-primary-container/50 transition-all bg-surface dark:bg-zinc-900/10 rounded-xl">
+                  <div className="w-32 h-32 bg-surface-container-low dark:bg-zinc-800/30 mb-6 flex items-center justify-center p-4 rounded-lg overflow-hidden">
+                    <Image
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      alt={p.alt}
+                      src={p.image}
+                      width={128}
+                      height={128}
+                    />
+                  </div>
+                  <h3 className="font-button text-button text-on-surface dark:text-surface mb-2 font-semibold">
+                    {p.name}
+                  </h3>
+                  <p className="font-body-md text-[14px] text-on-surface-variant dark:text-secondary-container mb-4 font-semibold">
+                    {p.displayPrice}
+                  </p>
+                  <button
+                    onClick={() =>
+                      handleAddToCart(p.id, p.name, p.price, p.imageSrc, p.qty)
+                    }
+                    className="w-full border border-on-surface dark:border-surface text-on-surface dark:text-surface py-3 font-label-caps text-label-caps hover:bg-on-surface hover:text-surface dark:hover:bg-surface dark:hover:text-on-surface transition-colors mt-auto cursor-pointer"
+                  >
+                    ADD TO CART
+                  </button>
+                </div>
+              );
+
               const total = ritualProducts.length;
               const prev = () =>
                 setRitualCarouselIndex((i) => (i - 1 + total) % total);
               const next = () =>
                 setRitualCarouselIndex((i) => (i + 1) % total);
               const product = ritualProducts[ritualCarouselIndex];
+
               return (
-                <div className="flex flex-col items-center gap-6">
-                  <div className="relative w-full max-w-sm mx-auto">
-                    {/* Prev button */}
-                    <button
-                      onClick={prev}
-                      aria-label="Previous product"
-                      className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 z-10 w-10 h-10 flex items-center justify-center rounded-full border border-secondary-container/30 bg-surface dark:bg-zinc-900 hover:border-primary-container/60 hover:bg-surface-container-low dark:hover:bg-zinc-800 transition-all shadow-sm cursor-pointer"
-                    >
-                      <span className="material-symbols-outlined text-xl text-on-surface dark:text-surface">
-                        chevron_left
-                      </span>
-                    </button>
-
-                    {/* Card */}
-                    <div
-                      key={ritualCarouselIndex}
-                      className="rec-card group border border-secondary-container/20 dark:border-zinc-800 p-8 flex flex-col items-center text-center hover:border-primary-container/50 transition-all bg-surface dark:bg-zinc-900/10 rounded-xl"
-                    >
-                      <div className="w-40 h-40 bg-surface-container-low dark:bg-zinc-800/30 mb-6 flex items-center justify-center p-4 rounded-lg overflow-hidden">
-                        <Image
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          alt={product.alt}
-                          src={product.image}
-                          width={160}
-                          height={160}
-                        />
-                      </div>
-                      <h3 className="font-button text-button text-on-surface dark:text-surface mb-2 font-semibold">
-                        {product.name}
-                      </h3>
-                      <p className="font-body-md text-[14px] text-on-surface-variant dark:text-secondary-container mb-6 font-semibold">
-                        {product.displayPrice}
-                      </p>
-                      <button
-                        onClick={() =>
-                          handleAddToCart(
-                            product.id,
-                            product.name,
-                            product.price,
-                            product.imageSrc,
-                            product.qty,
-                          )
-                        }
-                        className="w-full border border-on-surface dark:border-surface text-on-surface dark:text-surface py-3 font-label-caps text-label-caps hover:bg-on-surface hover:text-surface dark:hover:bg-surface dark:hover:text-on-surface transition-colors mt-auto cursor-pointer rounded"
-                      >
-                        ADD TO CART
-                      </button>
-                    </div>
-
-                    {/* Next button */}
-                    <button
-                      onClick={next}
-                      aria-label="Next product"
-                      className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 z-10 w-10 h-10 flex items-center justify-center rounded-full border border-secondary-container/30 bg-surface dark:bg-zinc-900 hover:border-primary-container/60 hover:bg-surface-container-low dark:hover:bg-zinc-800 transition-all shadow-sm cursor-pointer"
-                    >
-                      <span className="material-symbols-outlined text-xl text-on-surface dark:text-surface">
-                        chevron_right
-                      </span>
-                    </button>
-                  </div>
-
-                  {/* Dot indicators */}
-                  <div className="flex items-center gap-2">
-                    {ritualProducts.map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setRitualCarouselIndex(i)}
-                        aria-label={`Go to product ${i + 1}`}
-                        className={`rounded-full transition-all duration-300 cursor-pointer ${
-                          i === ritualCarouselIndex
-                            ? "w-6 h-2 bg-primary-container"
-                            : "w-2 h-2 bg-secondary-container/40 hover:bg-secondary-container/70"
-                        }`}
-                      />
+                <>
+                  {/* Desktop: 3-column grid */}
+                  <div className="hidden md:grid grid-cols-3 gap-stack-md">
+                    {ritualProducts.map((p) => (
+                      <ProductCard key={p.id} p={p} />
                     ))}
                   </div>
 
-                  {/* Counter */}
-                  <p className="text-xs text-on-surface-variant dark:text-secondary-container font-semibold tracking-wider uppercase">
-                    {ritualCarouselIndex + 1} / {total}
-                  </p>
-                </div>
+                  {/* Mobile: single-product carousel */}
+                  <div className="flex md:hidden flex-col items-center gap-6">
+                    <div className="relative w-full max-w-sm mx-auto">
+                      <button
+                        onClick={prev}
+                        aria-label="Previous product"
+                        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 z-10 w-10 h-10 flex items-center justify-center rounded-full border border-secondary-container/30 bg-surface dark:bg-zinc-900 hover:border-primary-container/60 hover:bg-surface-container-low dark:hover:bg-zinc-800 transition-all shadow-sm cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined text-xl text-on-surface dark:text-surface">
+                          chevron_left
+                        </span>
+                      </button>
+
+                      <div key={ritualCarouselIndex}>
+                        <ProductCard p={product} />
+                      </div>
+
+                      <button
+                        onClick={next}
+                        aria-label="Next product"
+                        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 z-10 w-10 h-10 flex items-center justify-center rounded-full border border-secondary-container/30 bg-surface dark:bg-zinc-900 hover:border-primary-container/60 hover:bg-surface-container-low dark:hover:bg-zinc-800 transition-all shadow-sm cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined text-xl text-on-surface dark:text-surface">
+                          chevron_right
+                        </span>
+                      </button>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      {ritualProducts.map((_, i) => (
+                        <button
+                          key={i}
+                          onClick={() => setRitualCarouselIndex(i)}
+                          aria-label={`Go to product ${i + 1}`}
+                          className={`rounded-full transition-all duration-300 cursor-pointer ${
+                            i === ritualCarouselIndex
+                              ? "w-6 h-2 bg-primary-container"
+                              : "w-2 h-2 bg-secondary-container/40 hover:bg-secondary-container/70"
+                          }`}
+                        />
+                      ))}
+                    </div>
+
+                    <p className="text-xs text-on-surface-variant dark:text-secondary-container font-semibold tracking-wider uppercase">
+                      {ritualCarouselIndex + 1} / {total}
+                    </p>
+                  </div>
+                </>
               );
             })()}
           </div>
@@ -2383,22 +2362,22 @@ export default function Home() {
       </footer>
 
       {/* Slide-over Cart Drawer */}
-      {isCartOpen && (
-        <div
-          className="fixed inset-0 z-50 overflow-hidden"
-          role="dialog"
-          aria-modal="true"
-        >
+      <div
+        className={`fixed inset-0 z-50 overflow-hidden transition-all duration-300 ${isCartOpen ? "pointer-events-auto" : "pointer-events-none"}`}
+        role="dialog"
+        aria-modal="true"
+        aria-hidden={!isCartOpen}
+      >
           <div className="absolute inset-0 overflow-hidden">
             {/* Dark Backdrop */}
             <div
               onClick={() => setIsCartOpen(false)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-500 ease-in-out"
+              className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-500 ease-in-out ${isCartOpen ? "opacity-100" : "opacity-0"}`}
             ></div>
 
             {/* Panel */}
             <div className="absolute inset-y-0 right-0 flex max-w-full pl-10 pointer-events-none">
-              <div className="w-screen max-w-md pointer-events-auto">
+              <div className={`w-screen max-w-md pointer-events-auto will-change-transform transition-transform duration-500 ease-out ${isCartOpen ? "translate-x-0" : "translate-x-full"}`}>
                 <div className="flex flex-col h-full bg-surface dark:bg-zinc-900 shadow-2xl border-l border-secondary-container/10">
                   {/* Header */}
                   <div className="px-6 py-6 border-b border-secondary-container/10 flex items-center justify-between">
@@ -2546,8 +2525,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </div>
-      )}
+      </div>
 
       {/* Video Modal Overlay */}
       {isVideoOpen && (
@@ -2646,7 +2624,7 @@ export default function Home() {
 
       {/* Custom Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-on-surface dark:bg-surface text-surface dark:text-on-surface px-6 py-4 shadow-xl flex items-center gap-4 rounded-lg border border-primary-container/20 max-w-sm animate-bounce">
+        <div className="fixed bottom-6 right-6 z-50 bg-on-surface dark:bg-surface text-surface dark:text-on-surface px-6 py-4 shadow-xl flex items-center gap-4 rounded-lg border border-primary-container/20 max-w-sm animate-slideInUp">
           <span className="material-symbols-outlined text-primary-container">
             check_circle
           </span>
