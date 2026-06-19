@@ -90,8 +90,7 @@ interface CartItem {
 }
 
 export default function Home() {
-  // Theme state
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+
 
   // Cart state
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -127,6 +126,7 @@ export default function Home() {
 
   // Accordion active index state
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+  const [ritualCarouselIndex, setRitualCarouselIndex] = useState(0);
 
   // Active hero information tab state
   const [activeHeroTab, setActiveHeroTab] = useState<
@@ -153,16 +153,7 @@ export default function Home() {
   // Product images mapping
   const productImages = [snoreOffNabhiOil, ingredientsImg, howToUseDropperImg];
 
-  // Initialize theme from document class
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const isDark = document.documentElement.classList.contains("dark");
-      const timer = setTimeout(() => {
-        setTheme(isDark ? "dark" : "light");
-      }, 0);
-      return () => clearTimeout(timer);
-    }
-  }, []);
+
 
   // GSAP and Locomotive Scroll Animations
   useEffect(() => {
@@ -683,18 +674,7 @@ export default function Home() {
     };
   }, []);
 
-  // Sync theme to DOM
-  const toggleTheme = () => {
-    const nextTheme = theme === "light" ? "dark" : "light";
-    setTheme(nextTheme);
-    if (nextTheme === "dark") {
-      document.documentElement.classList.add("dark");
-      document.documentElement.classList.remove("light");
-    } else {
-      document.documentElement.classList.add("light");
-      document.documentElement.classList.remove("dark");
-    }
-  };
+
 
   // Toast helper
   const showToast = (message: string) => {
@@ -774,10 +754,10 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-on-surface font-body-md select-none">
+    <div className="min-h-screen bg-background text-on-surface font-body-md select-none overflow-x-hidden">
       {/* TopNavBar */}
-      <header className="bg-surface/90 dark:bg-on-surface/90 backdrop-blur-md text-primary dark:text-primary-container fixed top-0 w-full border-b border-secondary-container/10 z-40 transition-colors duration-300">
-        <div className="flex justify-between items-center h-20 px-section-padding-h max-w-max-width mx-auto relative">
+      <header className="bg-surface/90 dark:bg-on-surface/90 backdrop-blur-md text-primary dark:text-primary-container fixed top-0 left-0 right-0 border-b border-secondary-container/10 z-40 transition-colors duration-300">
+        <div className="flex justify-between items-center h-20 px-4 md:px-section-padding-h max-w-max-width mx-auto relative">
           {/* Navigation Links (Left) */}
           <nav className="hidden md:flex gap-gutter items-center">
             <a
@@ -824,24 +804,13 @@ export default function Home() {
               <Image
                 src={headerLogo}
                 alt="Ved Sanjeevani Logo"
-                className="h-12 w-auto object-contain rounded-md"
+                className="h-9 md:h-12 w-auto object-contain rounded-md"
               />
             </a>
           </div>
 
           {/* Trailing Icons (Right) */}
-          <div className="flex gap-stack-md items-center">
-            {/* Dark Mode Switcher */}
-            <button
-              onClick={toggleTheme}
-              className="header-icon text-on-surface dark:text-surface hover:text-primary dark:hover:text-primary-container transition-colors p-2 rounded-full cursor-pointer"
-              title="Toggle color theme"
-              aria-label="Toggle dark mode"
-            >
-              <span className="material-symbols-outlined text-xl">
-                {theme === "light" ? "dark_mode" : "light_mode"}
-              </span>
-            </button>
+          <div className="flex gap-2 sm:gap-stack-md items-center">
 
             {/* Search Toggle */}
             <button
@@ -930,20 +899,7 @@ export default function Home() {
               </a>
             </nav>
 
-            <div className="mt-auto pt-6 border-t border-secondary-container/10">
-              <button
-                onClick={() => {
-                  toggleTheme();
-                  setIsMobileMenuOpen(false);
-                }}
-                className="flex items-center gap-3 text-on-surface dark:text-surface font-button text-sm uppercase tracking-wider w-full py-3"
-              >
-                <span className="material-symbols-outlined">
-                  {theme === "light" ? "dark_mode" : "light_mode"}
-                </span>
-                {theme === "light" ? "DARK MODE" : "LIGHT MODE"}
-              </button>
-            </div>
+
           </div>
         </div>
       )}
@@ -1222,9 +1178,9 @@ export default function Home() {
 
               <div className="flex gap-4">
                 {/* Prepaid Discount Badge */}
-                <div className="flex-1 bg-green-500/10 dark:bg-green-500/5 text-green-600 dark:text-green-400 py-3 px-4 border border-green-500/20 flex items-center justify-between text-xs rounded-lg font-semibold">
-                  <span>PREPAID OFFER</span>
-                  <span>5% EXTRA OFF</span>
+                <div className="flex-1 bg-green-500/10 dark:bg-green-500/5 text-green-600 dark:text-green-400 py-3 px-3 sm:px-4 border border-green-500/20 flex flex-col sm:flex-row items-center justify-between text-[10px] sm:text-xs rounded-lg font-semibold gap-1 sm:gap-2 uppercase tracking-wider text-center sm:text-left">
+                  <span>Prepaid</span>
+                  <span className="font-extrabold">Get Free Gift</span>
                 </div>
 
                 {/* Add to Cart Button */}
@@ -1732,19 +1688,19 @@ export default function Home() {
               </div>
 
               {/* Right Column: Benefits grid */}
-              <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="lg:col-span-7 grid grid-cols-2 gap-3 md:gap-5">
                 {/* Benefit 1 */}
-                <div className="benefit-card p-5 bg-surface-container-low dark:bg-zinc-900/10 rounded-2xl border border-secondary-container/10 flex gap-5 items-start">
-                  <div className="w-12 h-12 rounded-xl bg-primary-container/10 text-primary-container flex items-center justify-center shrink-0">
-                    <span className="material-symbols-outlined text-2xl">
+                <div className="benefit-card p-3.5 md:p-5 bg-surface-container-low dark:bg-zinc-900/10 rounded-2xl border border-secondary-container/10 flex gap-3 md:gap-5 items-start">
+                  <div className="w-9 h-9 md:w-12 md:h-12 rounded-xl bg-primary-container/10 text-primary-container flex items-center justify-center shrink-0">
+                    <span className="material-symbols-outlined text-xl md:text-2xl">
                       airwave
                     </span>
                   </div>
                   <div>
-                    <h4 className="font-serif text-base text-on-surface dark:text-surface font-semibold mb-1">
+                    <h4 className="font-serif text-xs md:text-base text-on-surface dark:text-surface font-semibold mb-1">
                       Clears Airways
                     </h4>
-                    <p className="font-body-md text-on-surface-variant dark:text-secondary-container text-xs leading-relaxed">
+                    <p className="font-body-md text-on-surface-variant dark:text-secondary-container text-[10px] md:text-xs leading-relaxed">
                       Natural decongestants help open breathing passages,
                       facilitating effortless oxygen flow.
                     </p>
@@ -1752,17 +1708,17 @@ export default function Home() {
                 </div>
 
                 {/* Benefit 2 */}
-                <div className="benefit-card p-5 bg-surface-container-low dark:bg-zinc-900/10 rounded-2xl border border-secondary-container/10 flex gap-5 items-start">
-                  <div className="w-12 h-12 rounded-xl bg-primary-container/10 text-primary-container flex items-center justify-center shrink-0">
-                    <span className="material-symbols-outlined text-2xl">
+                <div className="benefit-card p-3.5 md:p-5 bg-surface-container-low dark:bg-zinc-900/10 rounded-2xl border border-secondary-container/10 flex gap-3 md:gap-5 items-start">
+                  <div className="w-9 h-9 md:w-12 md:h-12 rounded-xl bg-primary-container/10 text-primary-container flex items-center justify-center shrink-0">
+                    <span className="material-symbols-outlined text-xl md:text-2xl">
                       pulse_alert
                     </span>
                   </div>
                   <div>
-                    <h4 className="font-serif text-base text-on-surface dark:text-surface font-semibold mb-1">
+                    <h4 className="font-serif text-xs md:text-base text-on-surface dark:text-surface font-semibold mb-1">
                       Reduces Inflammation
                     </h4>
-                    <p className="font-body-md text-on-surface-variant dark:text-secondary-container text-xs leading-relaxed">
+                    <p className="font-body-md text-on-surface-variant dark:text-secondary-container text-[10px] md:text-xs leading-relaxed">
                       Anti-inflammatory herbs reduce airway swelling, soothing
                       throat tissues to calm vibrations.
                     </p>
@@ -1770,17 +1726,17 @@ export default function Home() {
                 </div>
 
                 {/* Benefit 3 */}
-                <div className="benefit-card p-5 bg-surface-container-low dark:bg-zinc-900/10 rounded-2xl border border-secondary-container/10 flex gap-5 items-start">
-                  <div className="w-12 h-12 rounded-xl bg-primary-container/10 text-primary-container flex items-center justify-center shrink-0">
-                    <span className="material-symbols-outlined text-2xl">
+                <div className="benefit-card p-3.5 md:p-5 bg-surface-container-low dark:bg-zinc-900/10 rounded-2xl border border-secondary-container/10 flex gap-3 md:gap-5 items-start">
+                  <div className="w-9 h-9 md:w-12 md:h-12 rounded-xl bg-primary-container/10 text-primary-container flex items-center justify-center shrink-0">
+                    <span className="material-symbols-outlined text-xl md:text-2xl">
                       bedtime
                     </span>
                   </div>
                   <div>
-                    <h4 className="font-serif text-base text-on-surface dark:text-surface font-semibold mb-1">
+                    <h4 className="font-serif text-xs md:text-base text-on-surface dark:text-surface font-semibold mb-1">
                       Improves Sleep Quality
                     </h4>
-                    <p className="font-body-md text-on-surface-variant dark:text-secondary-container text-xs leading-relaxed">
+                    <p className="font-body-md text-on-surface-variant dark:text-secondary-container text-[10px] md:text-xs leading-relaxed">
                       Better breathing leads to more restful sleep, helping you
                       achieve deeper sleep cycles without disruptions.
                     </p>
@@ -1788,17 +1744,17 @@ export default function Home() {
                 </div>
 
                 {/* Benefit 4 */}
-                <div className="benefit-card p-5 bg-surface-container-low dark:bg-zinc-900/10 rounded-2xl border border-secondary-container/10 flex gap-5 items-start">
-                  <div className="w-12 h-12 rounded-xl bg-primary-container/10 text-primary-container flex items-center justify-center shrink-0">
-                    <span className="material-symbols-outlined text-2xl">
+                <div className="benefit-card p-3.5 md:p-5 bg-surface-container-low dark:bg-zinc-900/10 rounded-2xl border border-secondary-container/10 flex gap-3 md:gap-5 items-start">
+                  <div className="w-9 h-9 md:w-12 md:h-12 rounded-xl bg-primary-container/10 text-primary-container flex items-center justify-center shrink-0">
+                    <span className="material-symbols-outlined text-xl md:text-2xl">
                       diversity_1
                     </span>
                   </div>
                   <div>
-                    <h4 className="font-serif text-base text-on-surface dark:text-surface font-semibold mb-1">
+                    <h4 className="font-serif text-xs md:text-base text-on-surface dark:text-surface font-semibold mb-1">
                       Partner Relief
                     </h4>
-                    <p className="font-body-md text-on-surface-variant dark:text-secondary-container text-xs leading-relaxed">
+                    <p className="font-body-md text-on-surface-variant dark:text-secondary-container text-[10px] md:text-xs leading-relaxed">
                       Reduces snoring for peaceful sleep for both partners,
                       eliminating nightly fatigue and disturbance.
                     </p>
@@ -1806,17 +1762,17 @@ export default function Home() {
                 </div>
 
                 {/* Benefit 5 */}
-                <div className="benefit-card sm:col-span-2 p-5 bg-surface-container-low dark:bg-zinc-900/10 rounded-2xl border border-secondary-container/10 flex gap-5 items-start">
-                  <div className="w-12 h-12 rounded-xl bg-primary-container/10 text-primary-container flex items-center justify-center shrink-0">
-                    <span className="material-symbols-outlined text-2xl">
+                <div className="benefit-card col-span-2 p-3.5 md:p-5 bg-surface-container-low dark:bg-zinc-900/10 rounded-2xl border border-secondary-container/10 flex gap-3 md:gap-5 items-start">
+                  <div className="w-9 h-9 md:w-12 md:h-12 rounded-xl bg-primary-container/10 text-primary-container flex items-center justify-center shrink-0">
+                    <span className="material-symbols-outlined text-xl md:text-2xl">
                       health_and_safety
                     </span>
                   </div>
                   <div>
-                    <h4 className="font-serif text-base text-on-surface dark:text-surface font-semibold mb-1">
+                    <h4 className="font-serif text-xs md:text-base text-on-surface dark:text-surface font-semibold mb-1">
                       Respiratory Support
                     </h4>
-                    <p className="font-body-md text-on-surface-variant dark:text-secondary-container text-xs leading-relaxed">
+                    <p className="font-body-md text-on-surface-variant dark:text-secondary-container text-[10px] md:text-xs leading-relaxed">
                       Strengthens overall respiratory system function and
                       supports optimal nighttime oxygen levels.
                     </p>
@@ -1954,66 +1910,66 @@ export default function Home() {
               <div className="w-12 h-px bg-primary-container mx-auto"></div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
               {/* Card 1 */}
-              <div className="credibility-card group bg-surface dark:bg-zinc-900/40 p-8 rounded-2xl border border-secondary-container/10 hover:border-primary-container/40 transition-all duration-300 flex flex-col items-center text-center shadow-xs hover:shadow-md hover:-translate-y-1">
-                <div className="w-16 h-16 rounded-full bg-primary-container/10 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-primary-container/20 transition-all duration-300">
-                  <span className="material-symbols-outlined text-primary-container text-3xl">
+              <div className="credibility-card group bg-surface dark:bg-zinc-900/40 p-4 md:p-8 rounded-2xl border border-secondary-container/10 hover:border-primary-container/40 transition-all duration-300 flex flex-col items-center text-center shadow-xs hover:shadow-md hover:-translate-y-1">
+                <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-primary-container/10 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 group-hover:bg-primary-container/20 transition-all duration-300">
+                  <span className="material-symbols-outlined text-primary-container text-2xl md:text-3xl">
                     history_edu
                   </span>
                 </div>
-                <h3 className="font-serif text-base font-bold text-on-surface dark:text-surface mb-2 uppercase tracking-wide">
+                <h3 className="font-serif text-xs md:text-base font-bold text-on-surface dark:text-surface mb-2 uppercase tracking-wide">
                   40+ Years Ayurvedic Legacy
                 </h3>
-                <p className="font-body-md text-[11px] text-on-surface-variant dark:text-secondary-container leading-relaxed">
+                <p className="font-body-md text-[10px] md:text-[11px] text-on-surface-variant dark:text-secondary-container leading-relaxed">
                   Deeply rooted in decades of traditional wisdom, passing down
                   time-tested healing formulations.
                 </p>
               </div>
 
               {/* Card 2 */}
-              <div className="credibility-card group bg-surface dark:bg-zinc-900/40 p-8 rounded-2xl border border-secondary-container/10 hover:border-primary-container/40 transition-all duration-300 flex flex-col items-center text-center shadow-xs hover:shadow-md hover:-translate-y-1">
-                <div className="w-16 h-16 rounded-full bg-primary-container/10 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-primary-container/20 transition-all duration-300">
-                  <span className="material-symbols-outlined text-primary-container text-3xl">
+              <div className="credibility-card group bg-surface dark:bg-zinc-900/40 p-4 md:p-8 rounded-2xl border border-secondary-container/10 hover:border-primary-container/40 transition-all duration-300 flex flex-col items-center text-center shadow-xs hover:shadow-md hover:-translate-y-1">
+                <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-primary-container/10 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 group-hover:bg-primary-container/20 transition-all duration-300">
+                  <span className="material-symbols-outlined text-primary-container text-2xl md:text-3xl">
                     biotech
                   </span>
                 </div>
-                <h3 className="font-serif text-base font-bold text-on-surface dark:text-surface mb-2 uppercase tracking-wide">
+                <h3 className="font-serif text-xs md:text-base font-bold text-on-surface dark:text-surface mb-2 uppercase tracking-wide">
                   Expert Formulation
                 </h3>
-                <p className="font-body-md text-[11px] text-on-surface-variant dark:text-secondary-container leading-relaxed">
+                <p className="font-body-md text-[10px] md:text-[11px] text-on-surface-variant dark:text-secondary-container leading-relaxed">
                   Scientifically balanced ratios of active botanicals designed
                   for optimal absorption and efficacy.
                 </p>
               </div>
 
               {/* Card 3 */}
-              <div className="credibility-card group bg-surface dark:bg-zinc-900/40 p-8 rounded-2xl border border-secondary-container/10 hover:border-primary-container/40 transition-all duration-300 flex flex-col items-center text-center shadow-xs hover:shadow-md hover:-translate-y-1">
-                <div className="w-16 h-16 rounded-full bg-primary-container/10 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-primary-container/20 transition-all duration-300">
-                  <span className="material-symbols-outlined text-primary-container text-3xl">
+              <div className="credibility-card group bg-surface dark:bg-zinc-900/40 p-4 md:p-8 rounded-2xl border border-secondary-container/10 hover:border-primary-container/40 transition-all duration-300 flex flex-col items-center text-center shadow-xs hover:shadow-md hover:-translate-y-1">
+                <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-primary-container/10 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 group-hover:bg-primary-container/20 transition-all duration-300">
+                  <span className="material-symbols-outlined text-primary-container text-2xl md:text-3xl">
                     workspace_premium
                   </span>
                 </div>
-                <h3 className="font-serif text-base font-bold text-on-surface dark:text-surface mb-2 uppercase tracking-wide">
+                <h3 className="font-serif text-xs md:text-base font-bold text-on-surface dark:text-surface mb-2 uppercase tracking-wide">
                   Made by Ayurveda Experts
                 </h3>
-                <p className="font-body-md text-[11px] text-on-surface-variant dark:text-secondary-container leading-relaxed">
+                <p className="font-body-md text-[10px] md:text-[11px] text-on-surface-variant dark:text-secondary-container leading-relaxed">
                   Handcrafted and certified by experienced Vaidyas using
                   authentic Shastra methods.
                 </p>
               </div>
 
               {/* Card 4 */}
-              <div className="credibility-card group bg-surface dark:bg-zinc-900/40 p-8 rounded-2xl border border-secondary-container/10 hover:border-primary-container/40 transition-all duration-300 flex flex-col items-center text-center shadow-xs hover:shadow-md hover:-translate-y-1">
-                <div className="w-16 h-16 rounded-full bg-primary-container/10 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-primary-container/20 transition-all duration-300">
-                  <span className="material-symbols-outlined text-primary-container text-3xl">
+              <div className="credibility-card group bg-surface dark:bg-zinc-900/40 p-4 md:p-8 rounded-2xl border border-secondary-container/10 hover:border-primary-container/40 transition-all duration-300 flex flex-col items-center text-center shadow-xs hover:shadow-md hover:-translate-y-1">
+                <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-primary-container/10 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 group-hover:bg-primary-container/20 transition-all duration-300">
+                  <span className="material-symbols-outlined text-primary-container text-2xl md:text-3xl">
                     spa
                   </span>
                 </div>
-                <h3 className="font-serif text-base font-bold text-on-surface dark:text-surface mb-2 uppercase tracking-wide">
+                <h3 className="font-serif text-xs md:text-base font-bold text-on-surface dark:text-surface mb-2 uppercase tracking-wide">
                   Ingredient Purity
                 </h3>
-                <p className="font-body-md text-[11px] text-on-surface-variant dark:text-secondary-container leading-relaxed">
+                <p className="font-body-md text-[10px] md:text-[11px] text-on-surface-variant dark:text-secondary-container leading-relaxed">
                   100% natural, wild-harvested ingredients free from synthetic
                   additives, heavy metals, or chemicals.
                 </p>
@@ -2172,106 +2128,131 @@ export default function Home() {
               <div className="w-12 h-px bg-primary-container mx-auto"></div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-stack-md">
-              {/* Product 1 */}
-              <div className="rec-card group border border-secondary-container/20 dark:border-zinc-800 p-6 flex flex-col items-center text-center hover:border-primary-container/50 transition-all bg-surface dark:bg-zinc-900/10 rounded-xl">
-                <div className="w-32 h-32 bg-surface-container-low dark:bg-zinc-800/30 mb-6 flex items-center justify-center p-4 rounded-lg overflow-hidden relative">
-                  <Image
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                    alt="Ved Sanjeevani Ayurvedic Sleep Tea"
-                    src={tulsiImg}
-                    width={128}
-                    height={128}
-                  />
-                </div>
-                <h3 className="font-button text-button text-on-surface dark:text-surface mb-2 font-semibold">
-                  VED SANJEEVANI SLEEP TEA
-                </h3>
-                <p className="font-body-md text-[14px] text-on-surface-variant dark:text-secondary-container mb-4 font-semibold">
-                  ₹349.00
-                </p>
-                <button
-                  onClick={() =>
-                    handleAddToCart(
-                      "ved-sleep-tea",
-                      "VED SANJEEVANI SLEEP TEA",
-                      349.0,
-                      "/tulsi.png",
-                      "1 Pack",
-                    )
-                  }
-                  className="w-full border border-on-surface dark:border-surface text-on-surface dark:text-surface py-3 font-label-caps text-label-caps hover:bg-on-surface hover:text-surface dark:hover:bg-surface dark:hover:text-on-surface transition-colors mt-auto cursor-pointer"
-                >
-                  ADD TO CART
-                </button>
-              </div>
+            {/* Ritual Products Carousel */}
+            {(() => {
+              const ritualProducts = [
+                {
+                  id: "ved-sleep-tea",
+                  name: "VED SANJEEVANI SLEEP TEA",
+                  price: 349.0,
+                  displayPrice: "₹349.00",
+                  image: tulsiImg,
+                  imageSrc: "/tulsi.png",
+                  alt: "Ved Sanjeevani Ayurvedic Sleep Tea",
+                  qty: "1 Pack",
+                },
+                {
+                  id: "ved-anu-taila",
+                  name: "ANU TAILA NASAL DROPS",
+                  price: 299.0,
+                  displayPrice: "₹299.00",
+                  image: howToUseDropperImg,
+                  imageSrc: "/how_to_use_dropper.png",
+                  alt: "Anu Taila Nasal Drops",
+                  qty: "15ml Bottle",
+                },
+                {
+                  id: "ved-snore-balm",
+                  name: "SNORE OFF HERBAL BALM",
+                  price: 199.0,
+                  displayPrice: "₹199.00",
+                  image: cinnamonImg,
+                  imageSrc: "/cinnamon.png",
+                  alt: "Ved Sanjeevani Snore Off Balm",
+                  qty: "25g Jar",
+                },
+              ];
+              const total = ritualProducts.length;
+              const prev = () =>
+                setRitualCarouselIndex((i) => (i - 1 + total) % total);
+              const next = () =>
+                setRitualCarouselIndex((i) => (i + 1) % total);
+              const product = ritualProducts[ritualCarouselIndex];
+              return (
+                <div className="flex flex-col items-center gap-6">
+                  <div className="relative w-full max-w-sm mx-auto">
+                    {/* Prev button */}
+                    <button
+                      onClick={prev}
+                      aria-label="Previous product"
+                      className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 z-10 w-10 h-10 flex items-center justify-center rounded-full border border-secondary-container/30 bg-surface dark:bg-zinc-900 hover:border-primary-container/60 hover:bg-surface-container-low dark:hover:bg-zinc-800 transition-all shadow-sm cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-xl text-on-surface dark:text-surface">
+                        chevron_left
+                      </span>
+                    </button>
 
-              {/* Product 2 */}
-              <div className="rec-card group border border-secondary-container/20 dark:border-zinc-800 p-6 flex flex-col items-center text-center hover:border-primary-container/50 transition-all bg-surface dark:bg-zinc-900/10 rounded-xl">
-                <div className="w-32 h-32 bg-surface-container-low dark:bg-zinc-800/30 mb-6 flex items-center justify-center p-4 rounded-lg overflow-hidden relative">
-                  <Image
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                    alt="Anu Taila Nasal Drops"
-                    src={howToUseDropperImg}
-                    width={128}
-                    height={128}
-                  />
-                </div>
-                <h3 className="font-button text-button text-on-surface dark:text-surface mb-2 font-semibold">
-                  ANU TAILA NASAL DROPS
-                </h3>
-                <p className="font-body-md text-[14px] text-on-surface-variant dark:text-secondary-container mb-4 font-semibold">
-                  ₹299.00
-                </p>
-                <button
-                  onClick={() =>
-                    handleAddToCart(
-                      "ved-anu-taila",
-                      "ANU TAILA NASAL DROPS",
-                      299.0,
-                      "/how_to_use_dropper.png",
-                      "15ml Bottle",
-                    )
-                  }
-                  className="w-full border border-on-surface dark:border-surface text-on-surface dark:text-surface py-3 font-label-caps text-label-caps hover:bg-on-surface hover:text-surface dark:hover:bg-surface dark:hover:text-on-surface transition-colors mt-auto cursor-pointer"
-                >
-                  ADD TO CART
-                </button>
-              </div>
+                    {/* Card */}
+                    <div
+                      key={ritualCarouselIndex}
+                      className="rec-card group border border-secondary-container/20 dark:border-zinc-800 p-8 flex flex-col items-center text-center hover:border-primary-container/50 transition-all bg-surface dark:bg-zinc-900/10 rounded-xl"
+                    >
+                      <div className="w-40 h-40 bg-surface-container-low dark:bg-zinc-800/30 mb-6 flex items-center justify-center p-4 rounded-lg overflow-hidden">
+                        <Image
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          alt={product.alt}
+                          src={product.image}
+                          width={160}
+                          height={160}
+                        />
+                      </div>
+                      <h3 className="font-button text-button text-on-surface dark:text-surface mb-2 font-semibold">
+                        {product.name}
+                      </h3>
+                      <p className="font-body-md text-[14px] text-on-surface-variant dark:text-secondary-container mb-6 font-semibold">
+                        {product.displayPrice}
+                      </p>
+                      <button
+                        onClick={() =>
+                          handleAddToCart(
+                            product.id,
+                            product.name,
+                            product.price,
+                            product.imageSrc,
+                            product.qty,
+                          )
+                        }
+                        className="w-full border border-on-surface dark:border-surface text-on-surface dark:text-surface py-3 font-label-caps text-label-caps hover:bg-on-surface hover:text-surface dark:hover:bg-surface dark:hover:text-on-surface transition-colors mt-auto cursor-pointer rounded"
+                      >
+                        ADD TO CART
+                      </button>
+                    </div>
 
-              {/* Product 3 */}
-              <div className="rec-card group border border-secondary-container/20 dark:border-zinc-800 p-6 flex flex-col items-center text-center hover:border-primary-container/50 transition-all bg-surface dark:bg-zinc-900/10 rounded-xl">
-                <div className="w-32 h-32 bg-surface-container-low dark:bg-zinc-800/30 mb-6 flex items-center justify-center p-4 rounded-lg overflow-hidden relative">
-                  <Image
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                    alt="Ved Sanjeevani Snore Off Balm"
-                    src={cinnamonImg}
-                    width={128}
-                    height={128}
-                  />
+                    {/* Next button */}
+                    <button
+                      onClick={next}
+                      aria-label="Next product"
+                      className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 z-10 w-10 h-10 flex items-center justify-center rounded-full border border-secondary-container/30 bg-surface dark:bg-zinc-900 hover:border-primary-container/60 hover:bg-surface-container-low dark:hover:bg-zinc-800 transition-all shadow-sm cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-xl text-on-surface dark:text-surface">
+                        chevron_right
+                      </span>
+                    </button>
+                  </div>
+
+                  {/* Dot indicators */}
+                  <div className="flex items-center gap-2">
+                    {ritualProducts.map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setRitualCarouselIndex(i)}
+                        aria-label={`Go to product ${i + 1}`}
+                        className={`rounded-full transition-all duration-300 cursor-pointer ${
+                          i === ritualCarouselIndex
+                            ? "w-6 h-2 bg-primary-container"
+                            : "w-2 h-2 bg-secondary-container/40 hover:bg-secondary-container/70"
+                        }`}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Counter */}
+                  <p className="text-xs text-on-surface-variant dark:text-secondary-container font-semibold tracking-wider uppercase">
+                    {ritualCarouselIndex + 1} / {total}
+                  </p>
                 </div>
-                <h3 className="font-button text-button text-on-surface dark:text-surface mb-2 font-semibold">
-                  SNORE OFF HERBAL BALM
-                </h3>
-                <p className="font-body-md text-[14px] text-on-surface-variant dark:text-secondary-container mb-4 font-semibold">
-                  ₹199.00
-                </p>
-                <button
-                  onClick={() =>
-                    handleAddToCart(
-                      "ved-snore-balm",
-                      "SNORE OFF HERBAL BALM",
-                      199.0,
-                      "/cinnamon.png",
-                      "25g Jar",
-                    )
-                  }
-                  className="w-full border border-on-surface dark:border-surface text-on-surface dark:text-surface py-3 font-label-caps text-label-caps hover:bg-on-surface hover:text-surface dark:hover:bg-surface dark:hover:text-on-surface transition-colors mt-auto cursor-pointer"
-                >
-                  ADD TO CART
-                </button>
-              </div>
-            </div>
+              );
+            })()}
           </div>
         </section>
 
