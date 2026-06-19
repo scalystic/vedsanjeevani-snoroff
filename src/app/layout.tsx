@@ -1,22 +1,47 @@
 import type { Metadata } from "next";
-import { Montserrat, Playfair_Display } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const montserrat = Montserrat({
-  variable: "--font-montserrat",
-  subsets: ["latin"],
-  weight: ["400", "600", "700"],
+const trajanPro = localFont({
+  src: [
+    {
+      path: "../../public/fonts/TrajanPro-Regular.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/TrajanPro-Bold.woff2",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+  variable: "--font-trajan-pro",
 });
 
-const playfairDisplay = Playfair_Display({
-  variable: "--font-playfair-display",
-  subsets: ["latin"],
-  weight: ["600", "700"],
+const myriadPro = localFont({
+  src: [
+    {
+      path: "../../public/fonts/MyriadPro-Regular.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/MyriadPro-Semibold.woff2",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/MyriadPro-Bold.woff2",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+  variable: "--font-myriad-pro",
 });
 
 export const metadata: Metadata = {
-  title: "AURA PERFORMANCE ELIXIR - High-End E-Commerce",
-  description: "A meticulous blend engineered for absolute cognitive clarity and sustained physical optimization.",
+  title: "Snore Off Nabhi Oil - Ved Sanjeevani",
+  description: "Ancient Nabhi Therapy for better breathing, reduced snoring, and deep restful sleep.",
 };
 
 export default function RootLayout({
@@ -27,7 +52,8 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${montserrat.variable} ${playfairDisplay.variable} h-full antialiased light`}
+      className={`${trajanPro.variable} ${myriadPro.variable} h-full antialiased light`}
+      suppressHydrationWarning
     >
       <head>
         <link

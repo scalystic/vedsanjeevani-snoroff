@@ -31,7 +31,7 @@
   --color-outline: #7f7663;
   --color-secondary-fixed-dim: #c8c6c5;
   --color-on-error: #ffffff;
-  --color-background: #f9f9f9;
+  --color-background: #ffffff;
   --color-tertiary-fixed: #e2e2e2;
   --color-tertiary-fixed-dim: #c6c6c7;
   --color-error-container: #ffdad6;
@@ -40,7 +40,7 @@
   --color-inverse-surface: #2f3131;
   --color-error: #ba1a1a;
   --color-tertiary: #5d5f5f;
-  --color-surface: #f9f9f9;
+  --color-surface: #ffffff;
   --color-on-primary-fixed: #241a00;
   --color-on-tertiary-fixed: #1a1c1c;
   --color-on-secondary-fixed: #1c1b1b;
@@ -59,14 +59,14 @@
   --spacing-max-width: 1280px;
   --spacing-stack-md: 24px;
 
-  --font-display-lg-mobile: var(--font-playfair-display);
-  --font-headline-sm: var(--font-playfair-display);
-  --font-button: var(--font-montserrat);
-  --font-body-lg: var(--font-montserrat);
-  --font-label-caps: var(--font-montserrat);
-  --font-display-lg: var(--font-playfair-display);
-  --font-body-md: var(--font-montserrat);
-  --font-headline-md: var(--font-playfair-display);
+  --font-display-lg-mobile: var(--font-trajan-pro), "Times New Roman", Times, serif;
+  --font-headline-sm: var(--font-trajan-pro), "Times New Roman", Times, serif;
+  --font-button: var(--font-myriad-pro), "Times New Roman", Times, serif;
+  --font-body-lg: var(--font-myriad-pro), "Times New Roman", Times, serif;
+  --font-label-caps: var(--font-myriad-pro), "Times New Roman", Times, serif;
+  --font-display-lg: var(--font-trajan-pro), "Times New Roman", Times, serif;
+  --font-body-md: var(--font-myriad-pro), "Times New Roman", Times, serif;
+  --font-headline-md: var(--font-trajan-pro), "Times New Roman", Times, serif;
 
   /* Typography sizes & sub-keys for Tailwind CSS v4 */
   --text-display-lg-mobile: 44px;
@@ -112,7 +112,7 @@
 body {
   background-color: var(--color-background);
   color: var(--color-on-surface);
-  font-family: var(--font-montserrat), sans-serif;
+  font-family: var(--font-myriad-pro), "Times New Roman", Times, serif;
 }
 
 .material-symbols-outlined {
