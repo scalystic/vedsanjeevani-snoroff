@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 
 // Local image imports for optimal sizing and placeholder generation
 import headerLogo from "../../public/header-llogo.avif";
@@ -15,6 +15,9 @@ import castorOilImg from "../../public/castor_oil.png";
 import tulsiImg from "../../public/tulsi.png";
 import cinnamonImg from "../../public/cinnamon.png";
 import howToUseDropperImg from "../../public/how_to_use_dropper.png";
+import productImage1 from "../../public/images/product_image_1.jpg";
+import productImage2 from "../../public/images/product_image_2.jpg";
+import productImage3 from "../../public/images/product_image_3.jpg";
 
 // Media & Retail Partner Logos
 import forbesLogo from "../../public/logos/forbes_india.svg";
@@ -80,6 +83,104 @@ const BlinkitLogo = () => (
   </div>
 );
 
+const mediaLogosList = [
+  {
+    id: "forbes",
+    element: (
+      <div className="h-10 flex items-center justify-center opacity-85 hover:opacity-100 hover:scale-105 transition-all duration-300 dark:brightness-0 dark:invert shrink-0">
+        <Image
+          src={forbesLogo}
+          alt="Forbes India"
+          className="h-8 w-auto object-contain"
+        />
+      </div>
+    ),
+  },
+  {
+    id: "bc",
+    element: (
+      <div className="h-10 flex items-center justify-center opacity-85 hover:opacity-100 hover:scale-105 transition-all duration-300 shrink-0">
+        <BusinessConnectLogo />
+      </div>
+    ),
+  },
+  {
+    id: "livenagpur",
+    element: (
+      <div className="h-10 flex items-center justify-center opacity-85 hover:opacity-100 hover:scale-105 transition-all duration-300 shrink-0">
+        <TheLiveNagpurLogo />
+      </div>
+    ),
+  },
+  {
+    id: "mirror",
+    element: (
+      <div className="h-10 flex items-center justify-center opacity-85 hover:opacity-100 hover:scale-105 transition-all duration-300 shrink-0">
+        <AhmedabadMirrorLogo />
+      </div>
+    ),
+  },
+];
+
+const retailLogosList = [
+  {
+    id: "blinkit",
+    element: (
+      <div className="h-10 flex items-center justify-center opacity-85 hover:opacity-100 hover:scale-105 transition-all duration-300 shrink-0">
+        <BlinkitLogo />
+      </div>
+    ),
+  },
+  {
+    id: "amazon",
+    element: (
+      <div className="h-10 flex items-center justify-center opacity-85 hover:opacity-100 hover:scale-105 transition-all duration-300 dark:brightness-0 dark:invert shrink-0">
+        <Image
+          src={amazonLogo}
+          alt="Amazon"
+          className="h-7 w-auto object-contain"
+        />
+      </div>
+    ),
+  },
+  {
+    id: "flipkart",
+    element: (
+      <div className="h-12 flex items-center justify-center opacity-85 hover:opacity-100 hover:scale-105 transition-all duration-300 shrink-0">
+        <Image
+          src={flipkartLogo}
+          alt="Flipkart"
+          className="h-10 w-auto object-contain"
+        />
+      </div>
+    ),
+  },
+  {
+    id: "myntra",
+    element: (
+      <div className="h-10 flex items-center justify-center opacity-85 hover:opacity-100 hover:scale-105 transition-all duration-300 shrink-0">
+        <Image
+          src={myntraLogo}
+          alt="Myntra"
+          className="h-8 w-auto object-contain"
+        />
+      </div>
+    ),
+  },
+  {
+    id: "meesho",
+    element: (
+      <div className="h-10 flex items-center justify-center opacity-85 hover:opacity-100 hover:scale-105 transition-all duration-300 shrink-0">
+        <Image
+          src={meeshoLogo}
+          alt="Meesho"
+          className="h-8 w-auto object-contain"
+        />
+      </div>
+    ),
+  },
+];
+
 // Types
 interface CartItem {
   id: string;
@@ -90,9 +191,53 @@ interface CartItem {
   size: string;
 }
 
+interface ProductCardProps {
+  p: {
+    id: string;
+    name: string;
+    price: number;
+    displayPrice: string;
+    image: StaticImageData;
+    imageSrc: string;
+    alt: string;
+    qty: string;
+  };
+  onAddToCart: (
+    id: string,
+    name: string,
+    price: number,
+    image: string,
+    size: string,
+  ) => void;
+}
+
+const ProductCard = ({ p, onAddToCart }: ProductCardProps) => (
+  <div className="rec-card group border border-secondary-container/20 dark:border-zinc-800 p-6 flex flex-col items-center text-center hover:border-primary-container/50 transition-all bg-surface dark:bg-zinc-900/10 rounded-xl">
+    <div className="w-48 aspect-3/4 bg-surface-container-low dark:bg-zinc-800/30 mb-6 flex items-center justify-center p-4 rounded-lg overflow-hidden">
+      <Image
+        className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-300"
+        alt={p.alt}
+        src={p.image}
+        width={300}
+        height={400}
+      />
+    </div>
+    <h3 className="font-button text-button text-on-surface dark:text-surface mb-2 font-semibold">
+      {p.name}
+    </h3>
+    <p className="font-body-md text-[14px] text-on-surface-variant dark:text-secondary-container mb-4 font-semibold">
+      {p.displayPrice}
+    </p>
+    <button
+      onClick={() => onAddToCart(p.id, p.name, p.price, p.imageSrc, p.qty)}
+      className="w-full border border-on-surface dark:border-surface text-on-surface dark:text-surface py-3 font-label-caps text-label-caps hover:bg-on-surface hover:text-surface dark:hover:bg-surface dark:hover:text-on-surface transition-colors mt-auto cursor-pointer"
+    >
+      ADD TO CART
+    </button>
+  </div>
+);
+
 export default function Home() {
-
-
   // Cart state
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cart, setCart] = useState<CartItem[]>([
@@ -117,7 +262,7 @@ export default function Home() {
 
   // Video modal state
   const [activeVideoUrl, setActiveVideoUrl] = useState<string | null>(null);
-  
+
   // Reviews carousel active index state
   const [reviewCarouselIndex, setReviewCarouselIndex] = useState(0);
 
@@ -127,6 +272,10 @@ export default function Home() {
 
   // Video review refs for autoplay management
   const reviewVideoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+
+  // Sticky Buy now button states and refs
+  const purchaseConsoleRef = useRef<HTMLDivElement>(null);
+  const [showStickyBuy, setShowStickyBuy] = useState(false);
 
   // Search modal state
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -157,6 +306,22 @@ export default function Home() {
       }
     });
   }, [reviewCarouselIndex]);
+
+  // Show sticky buy button when purchase actions console is scrolled past
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!purchaseConsoleRef.current) return;
+      const rect = purchaseConsoleRef.current.getBoundingClientRect();
+      setShowStickyBuy(rect.bottom < 0);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   // Touch Swipe handlers for reviews carousel
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -197,15 +362,12 @@ export default function Home() {
   }, []);
 
   // Product images mapping
-  const productImages = [snoreOffNabhiOil, ingredientsImg, howToUseDropperImg];
-
-
+  const productImages = [productImage3, productImage1, productImage2];
 
   // GSAP Animations
   useEffect(() => {
     // Create GSAP Context to handle double-mount in React 19/strict mode
     const ctx = gsap.context(() => {
-
       // --- ENTRANCE ANIMATIONS (Hero & Header) ---
       const headerTl = gsap.timeline({ defaults: { ease: "power3.out" } });
       headerTl
@@ -579,6 +741,38 @@ export default function Home() {
         },
       );
 
+      // Detailed Ratings Title
+      gsap.fromTo(
+        ".ratings-overview-title",
+        { y: 20, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.6,
+          scrollTrigger: {
+            trigger: ".ratings-overview-title",
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+        },
+      );
+
+      // Detailed Ratings Card
+      gsap.fromTo(
+        ".ratings-overview-card",
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          scrollTrigger: {
+            trigger: ".ratings-overview-card",
+            start: "top 80%",
+            toggleActions: "play none none reverse",
+          },
+        },
+      );
+
       // FAQ Section Title
       gsap.fromTo(
         ".faq-title",
@@ -690,8 +884,6 @@ export default function Home() {
       ctx.revert();
     };
   }, []);
-
-
 
   // Toast helper
   const showToast = (message: string) => {
@@ -833,7 +1025,6 @@ export default function Home() {
 
           {/* Trailing Icons (Right) */}
           <div className="flex gap-2 sm:gap-stack-md items-center">
-
             {/* Search Toggle */}
             <button
               onClick={() => setIsSearchOpen(true)}
@@ -863,65 +1054,65 @@ export default function Home() {
       </header>
 
       {/* Mobile Navigation Drawer */}
-      <div className={`fixed inset-0 z-50 flex md:hidden ${isMobileMenuOpen ? "pointer-events-auto" : "pointer-events-none"}`}>
-          {/* Overlay */}
-          <div
-            onClick={() => setIsMobileMenuOpen(false)}
-            className={`fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${isMobileMenuOpen ? "opacity-100" : "opacity-0"}`}
-          ></div>
+      <div
+        className={`fixed inset-0 z-50 flex md:hidden ${isMobileMenuOpen ? "pointer-events-auto" : "pointer-events-none"}`}
+      >
+        {/* Overlay */}
+        <div
+          onClick={() => setIsMobileMenuOpen(false)}
+          className={`fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${isMobileMenuOpen ? "opacity-100" : "opacity-0"}`}
+        ></div>
 
-          {/* Content */}
-          <div className={`relative flex flex-col w-4/5 max-w-sm h-full bg-surface dark:bg-on-surface p-6 shadow-2xl z-10 will-change-transform transition-transform duration-300 ease-out ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}>
-            <div className="flex justify-between items-center mb-10">
-              <Image
-                src={headerLogo}
-                alt="Ved Sanjeevani Logo"
-                className="h-10 w-auto object-contain rounded-md"
-              />
-              <button
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-on-surface dark:text-surface p-2"
-                aria-label="Close mobile menu"
-              >
-                <span className="material-symbols-outlined text-2xl">
-                  close
-                </span>
-              </button>
-            </div>
-
-            <nav className="flex flex-col gap-6">
-              <a
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="font-button text-lg uppercase tracking-wider text-on-surface dark:text-surface border-b border-secondary-container/10 pb-2"
-                href="#shop"
-              >
-                SHOP
-              </a>
-              <a
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="font-button text-lg uppercase tracking-wider text-on-surface dark:text-surface border-b border-secondary-container/10 pb-2"
-                href="#science"
-              >
-                SCIENCE
-              </a>
-              <a
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="font-button text-lg uppercase tracking-wider text-on-surface dark:text-surface border-b border-secondary-container/10 pb-2"
-                href="#ritual"
-              >
-                RITUAL
-              </a>
-              <a
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="font-button text-lg uppercase tracking-wider text-on-surface dark:text-surface border-b border-secondary-container/10 pb-2"
-                href="#reviews"
-              >
-                REVIEWS
-              </a>
-            </nav>
-
-
+        {/* Content */}
+        <div
+          className={`relative flex flex-col w-4/5 max-w-sm h-full bg-surface dark:bg-on-surface p-6 shadow-2xl z-10 will-change-transform transition-transform duration-300 ease-out ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
+        >
+          <div className="flex justify-between items-center mb-10">
+            <Image
+              src={headerLogo}
+              alt="Ved Sanjeevani Logo"
+              className="h-10 w-auto object-contain rounded-md"
+            />
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-on-surface dark:text-surface p-2"
+              aria-label="Close mobile menu"
+            >
+              <span className="material-symbols-outlined text-2xl">close</span>
+            </button>
           </div>
+
+          <nav className="flex flex-col gap-6">
+            <a
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="font-button text-lg uppercase tracking-wider text-on-surface dark:text-surface border-b border-secondary-container/10 pb-2"
+              href="#shop"
+            >
+              SHOP
+            </a>
+            <a
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="font-button text-lg uppercase tracking-wider text-on-surface dark:text-surface border-b border-secondary-container/10 pb-2"
+              href="#science"
+            >
+              SCIENCE
+            </a>
+            <a
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="font-button text-lg uppercase tracking-wider text-on-surface dark:text-surface border-b border-secondary-container/10 pb-2"
+              href="#ritual"
+            >
+              RITUAL
+            </a>
+            <a
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="font-button text-lg uppercase tracking-wider text-on-surface dark:text-surface border-b border-secondary-container/10 pb-2"
+              href="#reviews"
+            >
+              REVIEWS
+            </a>
+          </nav>
+        </div>
       </div>
 
       {/* Main Container */}
@@ -967,7 +1158,11 @@ export default function Home() {
 
               {/* Thumbnail 4: Video trigger */}
               <button
-                onClick={() => setActiveVideoUrl("https://assets.mixkit.co/videos/preview/mixkit-coffee-pouring-into-a-cup-34394-large.mp4")}
+                onClick={() =>
+                  setActiveVideoUrl(
+                    "https://assets.mixkit.co/videos/preview/mixkit-coffee-pouring-into-a-cup-34394-large.mp4",
+                  )
+                }
                 className="hero-thumbnail aspect-square bg-surface-container-low dark:bg-zinc-800/40 flex flex-col items-center justify-center cursor-pointer border border-secondary-container/10 hover:bg-surface-container-high dark:hover:bg-zinc-700/40 hover:opacity-100 opacity-80 transition-all text-on-surface-variant dark:text-surface-variant gap-1"
                 aria-label="Play product video"
               >
@@ -1149,7 +1344,7 @@ export default function Home() {
             </div>
 
             {/* Purchase Actions Console */}
-            <div className="hero-purchase-console flex flex-col gap-4 mb-8 bg-surface-container-low dark:bg-zinc-800/10 p-5 rounded-xl border border-secondary-container/10">
+            <div ref={purchaseConsoleRef} className="hero-purchase-console flex flex-col gap-4 mb-8 bg-surface-container-low dark:bg-zinc-800/10 p-5 rounded-xl border border-secondary-container/10">
               {/* Shiprocket BUY NOW Button */}
               <button
                 onClick={() => {
@@ -1846,7 +2041,7 @@ export default function Home() {
                     DISPENSE DROPS
                   </h4>
                   <p className="font-body-md text-on-surface-variant dark:text-secondary-container text-xs leading-relaxed">
-                    Put 4-5 drops of Nabhi Oil in your belly button daily before
+                    Put 6 drops of Nabhi Oil in your belly button daily before
                     bedtime.
                   </p>
                 </div>
@@ -1886,7 +2081,11 @@ export default function Home() {
             {/* Right Column: Editorial Video Frame */}
             <div className="lg:col-span-5">
               <div
-                onClick={() => setActiveVideoUrl("https://assets.mixkit.co/videos/preview/mixkit-coffee-pouring-into-a-cup-34394-large.mp4")}
+                onClick={() =>
+                  setActiveVideoUrl(
+                    "https://assets.mixkit.co/videos/preview/mixkit-coffee-pouring-into-a-cup-34394-large.mp4",
+                  )
+                }
                 className="ritual-video-container aspect-4/5 bg-surface-container dark:bg-zinc-800/20 border border-secondary-container/10 relative group cursor-pointer overflow-hidden flex items-center justify-center shadow-xl hover:shadow-2xl transition-all duration-500 rounded-2xl"
               >
                 <Image
@@ -2043,7 +2242,7 @@ export default function Home() {
               </button>
 
               {/* Sliding Area */}
-              <div 
+              <div
                 className="reviews-carousel-wrapper overflow-hidden rounded-3xl"
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
@@ -2051,35 +2250,40 @@ export default function Home() {
               >
                 <div
                   className="flex transition-transform duration-500 ease-in-out"
-                  style={{ transform: `translateX(-${reviewCarouselIndex * 100}%)` }}
+                  style={{
+                    transform: `translateX(-${reviewCarouselIndex * 100}%)`,
+                  }}
                 >
                   {[
                     {
                       name: "MARCUS T.",
-                      videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-man-sleeping-soundly-in-bed-41583-large.mp4",
-                      posterUrl: "https://images.unsplash.com/photo-1541781719201-981069c187a6?w=600&auto=format&fit=crop&q=80",
+                      videoUrl:
+                        "https://assets.mixkit.co/videos/preview/mixkit-man-sleeping-soundly-in-bed-41583-large.mp4",
+                      posterUrl:
+                        "https://images.unsplash.com/photo-1541781719201-981069c187a6?w=600&auto=format&fit=crop&q=80",
                     },
                     {
                       name: "ELENA R.",
-                      videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-woman-sleeping-peacefully-in-bed-41582-large.mp4",
-                      posterUrl: "https://images.unsplash.com/photo-1520206183501-b80ad6103b79?w=600&auto=format&fit=crop&q=80",
+                      videoUrl:
+                        "https://assets.mixkit.co/videos/preview/mixkit-woman-sleeping-peacefully-in-bed-41582-large.mp4",
+                      posterUrl:
+                        "https://images.unsplash.com/photo-1520206183501-b80ad6103b79?w=600&auto=format&fit=crop&q=80",
                     },
                     {
                       name: "RAJESH K.",
-                      videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-waking-up-and-stretching-in-bed-41584-large.mp4",
-                      posterUrl: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&auto=format&fit=crop&q=80",
+                      videoUrl:
+                        "https://assets.mixkit.co/videos/preview/mixkit-young-woman-waking-up-and-stretching-in-bed-41584-large.mp4",
+                      posterUrl:
+                        "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&auto=format&fit=crop&q=80",
                     },
                   ].map((item, idx) => (
-                    <div
-                      key={idx}
-                      className="w-full shrink-0 px-2"
-                    >
+                    <div key={idx} className="w-full shrink-0 px-2">
                       <div
                         onClick={() => setActiveVideoUrl(item.videoUrl)}
                         className="review-card group max-w-sm mx-auto flex flex-col items-center bg-surface-container-lowest dark:bg-zinc-900/20 border border-secondary-container/20 dark:border-zinc-800 rounded-3xl overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 cursor-pointer"
                       >
                         {/* Video Thumbnail (Portrait 3:4 aspect ratio) */}
-                        <div className="relative aspect-[3/4] w-full overflow-hidden bg-black/5 dark:bg-black/40">
+                        <div className="relative aspect-3/4 w-full overflow-hidden bg-black/5 dark:bg-black/40">
                           <video
                             ref={(el) => {
                               reviewVideoRefs.current[idx] = el;
@@ -2091,7 +2295,7 @@ export default function Home() {
                             playsInline
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                           />
-                          
+
                           {/* Video Badge */}
                           <span className="absolute top-4 left-4 text-[9px] font-bold text-white bg-black/75 px-3 py-1 rounded-full backdrop-blur-xs flex items-center gap-1.5 border border-white/10 uppercase tracking-widest">
                             <span className="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>
@@ -2161,6 +2365,166 @@ export default function Home() {
                   ))}
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Detailed Ratings Section */}
+        <section
+          id="detailed-ratings"
+          className="bg-surface-container-low/40 dark:bg-zinc-900/10 border-b border-secondary-container/10 transition-colors duration-300"
+        >
+          <div className="max-w-max-width mx-auto px-section-padding-h py-16 md:py-24">
+            {/* Title */}
+            <div className="ratings-overview-title text-center mb-12 md:mb-16">
+              <p className="font-button text-[11px] tracking-[0.2em] text-primary-container mb-2 uppercase">
+                Detailed Feedback
+              </p>
+              <h2 className="font-serif text-2xl md:text-[36px] leading-tight text-on-surface dark:text-surface mb-4">
+                Customer Satisfaction Breakdown
+              </h2>
+              <div className="w-12 h-px bg-primary-container mx-auto"></div>
+            </div>
+
+            {/* Overview Card */}
+            <div className="ratings-overview-card grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 bg-white dark:bg-zinc-900/40 p-6 md:p-12 rounded-3xl border border-secondary-container/20 dark:border-zinc-800/80 shadow-xs">
+              
+              {/* Column 1: Overall Summary */}
+              <div className="lg:col-span-4 flex flex-col items-center text-center lg:border-r lg:border-secondary-container/10 lg:pr-12">
+                <div className="text-6xl md:text-7xl font-serif font-bold text-on-surface dark:text-surface leading-none mb-3">
+                  4.8
+                </div>
+                
+                {/* 5 Stars */}
+                <div className="flex text-primary-container mb-3">
+                  {[1, 2, 3, 4, 5].map((_, i) => (
+                    <span
+                      key={i}
+                      className="material-symbols-outlined text-2xl md:text-3xl"
+                      style={{ fontVariationSettings: "'FILL' 1" }}
+                    >
+                      star
+                    </span>
+                  ))}
+                </div>
+                
+                <p className="font-body-md text-sm text-on-surface-variant dark:text-secondary-container mb-6">
+                  Based on <span className="font-bold text-on-surface dark:text-surface">1,280+ verified reviews</span>
+                </p>
+
+                {/* Recommendation Pill */}
+                <div className="inline-flex items-center gap-2 bg-emerald-500/10 dark:bg-emerald-500/5 text-emerald-700 dark:text-emerald-400 px-4 py-2 rounded-full border border-emerald-500/20 text-xs font-bold uppercase tracking-wider mb-6">
+                  <span className="material-symbols-outlined text-sm font-bold" style={{ fontVariationSettings: "'FILL' 1" }}>
+                    check_circle
+                  </span>
+                  98% Recommendation Rate
+                </div>
+
+                {/* Trust Seal */}
+                <div className="flex items-center gap-2 text-[10px] text-on-surface-variant/75 dark:text-secondary-container/70 uppercase tracking-widest font-semibold">
+                  <span className="material-symbols-outlined text-sm text-primary-container">
+                    verified_user
+                  </span>
+                  100% Verified Buyer Responses
+                </div>
+              </div>
+
+              {/* Column 2: Star Distribution Progress Bars */}
+              <div className="lg:col-span-4 flex flex-col justify-center gap-3.5 py-6 lg:py-0 lg:px-4 border-y border-secondary-container/10 lg:border-y-0">
+                {[
+                  { stars: 5, percentage: 89, count: 1139 },
+                  { stars: 4, percentage: 8, count: 102 },
+                  { stars: 3, percentage: 2, count: 26 },
+                  { stars: 2, percentage: 1, count: 13 },
+                  { stars: 1, percentage: 0, count: 0 },
+                ].map((row) => (
+                  <div key={row.stars} className="flex items-center gap-3 w-full">
+                    {/* Stars Label */}
+                    <div className="flex items-center gap-1 w-12 justify-end shrink-0">
+                      <span className="font-body-md text-xs font-bold text-on-surface dark:text-surface">
+                        {row.stars}
+                      </span>
+                      <span
+                        className="material-symbols-outlined text-sm text-primary-container"
+                        style={{ fontVariationSettings: "'FILL' 1" }}
+                      >
+                        star
+                      </span>
+                    </div>
+
+                    {/* Progress Bar Track */}
+                    <div className="flex-1 h-2.5 bg-secondary-container/20 dark:bg-zinc-800/80 rounded-full overflow-hidden relative">
+                      <div
+                        className="h-full bg-primary-container rounded-full transition-all duration-1000 ease-out"
+                        style={{ width: `${row.percentage}%` }}
+                      ></div>
+                    </div>
+
+                    {/* Percentage */}
+                    <div className="w-10 text-left shrink-0">
+                      <span className="font-body-md text-xs text-on-surface-variant dark:text-secondary-container">
+                        {row.percentage}%
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Column 3: Feature Breakdown */}
+              <div className="lg:col-span-4 flex flex-col gap-5 lg:pl-12">
+                <h4 className="font-serif text-sm font-bold text-on-surface dark:text-surface uppercase tracking-wider mb-2 text-center lg:text-left">
+                  Key Benefit Ratings
+                </h4>
+
+                {[
+                  {
+                    name: "Snoring Reduction",
+                    rating: "4.9",
+                    desc: "Silences heavy snoring & throat vibrations",
+                    icon: "nights_stay",
+                  },
+                  {
+                    name: "Sleep Quality",
+                    rating: "4.8",
+                    desc: "Deeper, uninterrupted sleep cycles",
+                    icon: "bedtime",
+                  },
+                  {
+                    name: "Morning Energy",
+                    rating: "4.8",
+                    desc: "Wake up fully rested and oxygenated",
+                    icon: "wb_sunny",
+                  },
+                  {
+                    name: "Ease of Use",
+                    rating: "4.9",
+                    desc: "6 drops in the navel before bed",
+                    icon: "spa",
+                  },
+                ].map((metric, i) => (
+                  <div key={i} className="flex gap-4 items-start">
+                    <div className="w-9 h-9 rounded-lg bg-primary-container/10 dark:bg-primary-container/5 text-primary-container flex items-center justify-center shrink-0">
+                      <span className="material-symbols-outlined text-lg">
+                        {metric.icon}
+                      </span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex justify-between items-baseline mb-0.5">
+                        <h5 className="font-serif text-xs font-bold text-on-surface dark:text-surface truncate pr-2">
+                          {metric.name}
+                        </h5>
+                        <span className="font-body-md text-xs font-bold text-primary-container shrink-0">
+                          {metric.rating} / 5
+                        </span>
+                      </div>
+                      <p className="font-body-md text-[10px] text-on-surface-variant dark:text-secondary-container leading-normal">
+                        {metric.desc}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
             </div>
           </div>
         </section>
@@ -2262,39 +2626,10 @@ export default function Home() {
                 },
               ];
 
-              const ProductCard = ({ p }: { p: typeof ritualProducts[0] }) => (
-                <div className="rec-card group border border-secondary-container/20 dark:border-zinc-800 p-6 flex flex-col items-center text-center hover:border-primary-container/50 transition-all bg-surface dark:bg-zinc-900/10 rounded-xl">
-                  <div className="w-32 h-32 bg-surface-container-low dark:bg-zinc-800/30 mb-6 flex items-center justify-center p-4 rounded-lg overflow-hidden">
-                    <Image
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      alt={p.alt}
-                      src={p.image}
-                      width={128}
-                      height={128}
-                    />
-                  </div>
-                  <h3 className="font-button text-button text-on-surface dark:text-surface mb-2 font-semibold">
-                    {p.name}
-                  </h3>
-                  <p className="font-body-md text-[14px] text-on-surface-variant dark:text-secondary-container mb-4 font-semibold">
-                    {p.displayPrice}
-                  </p>
-                  <button
-                    onClick={() =>
-                      handleAddToCart(p.id, p.name, p.price, p.imageSrc, p.qty)
-                    }
-                    className="w-full border border-on-surface dark:border-surface text-on-surface dark:text-surface py-3 font-label-caps text-label-caps hover:bg-on-surface hover:text-surface dark:hover:bg-surface dark:hover:text-on-surface transition-colors mt-auto cursor-pointer"
-                  >
-                    ADD TO CART
-                  </button>
-                </div>
-              );
-
               const total = ritualProducts.length;
               const prev = () =>
                 setRitualCarouselIndex((i) => (i - 1 + total) % total);
-              const next = () =>
-                setRitualCarouselIndex((i) => (i + 1) % total);
+              const next = () => setRitualCarouselIndex((i) => (i + 1) % total);
               const product = ritualProducts[ritualCarouselIndex];
 
               return (
@@ -2302,7 +2637,7 @@ export default function Home() {
                   {/* Desktop: 3-column grid */}
                   <div className="hidden md:grid grid-cols-3 gap-stack-md">
                     {ritualProducts.map((p) => (
-                      <ProductCard key={p.id} p={p} />
+                      <ProductCard key={p.id} p={p} onAddToCart={handleAddToCart} />
                     ))}
                   </div>
 
@@ -2320,7 +2655,7 @@ export default function Home() {
                       </button>
 
                       <div key={ritualCarouselIndex}>
-                        <ProductCard p={product} />
+                        <ProductCard p={product} onAddToCart={handleAddToCart} />
                       </div>
 
                       <button
@@ -2364,74 +2699,68 @@ export default function Home() {
           <div className="max-w-max-width mx-auto px-section-padding-h flex flex-col gap-16">
             {/* In Media */}
             <div className="flex flex-col items-center">
-              <h3 className="font-sans text-lg md:text-xl text-on-surface dark:text-surface font-semibold mb-8 text-center tracking-wider">
-                In Media
-              </h3>
-              <div className="flex flex-wrap justify-center items-center gap-10 md:gap-16 w-full max-w-4xl px-4">
-                {/* Forbes India */}
-                <div className="h-10 flex items-center justify-center opacity-85 hover:opacity-100 hover:scale-105 transition-all duration-300 dark:brightness-0 dark:invert">
-                  <Image
-                    src={forbesLogo}
-                    alt="Forbes India"
-                    className="h-8 w-auto object-contain"
-                  />
-                </div>
-                {/* Business Connect */}
-                <div className="h-10 flex items-center justify-center opacity-85 hover:opacity-100 hover:scale-105 transition-all duration-300">
-                  <BusinessConnectLogo />
-                </div>
-                {/* The Live Nagpur */}
-                <div className="h-10 flex items-center justify-center opacity-85 hover:opacity-100 hover:scale-105 transition-all duration-300">
-                  <TheLiveNagpurLogo />
-                </div>
-                {/* Ahmedabad Mirror */}
-                <div className="h-10 flex items-center justify-center opacity-85 hover:opacity-100 hover:scale-105 transition-all duration-300">
-                  <AhmedabadMirrorLogo />
+              <h2 className="font-headline-sm text-sm md:text-headline-sm text-on-surface dark:text-surface font-semibold mb-8 text-center uppercase tracking-widest">
+                IN MEDIA
+              </h2>
+              
+              {/* Desktop layout: static flex-wrap */}
+              <div className="hidden md:flex flex-wrap justify-center items-center gap-10 md:gap-16 w-full max-w-4xl px-4">
+                {mediaLogosList.map((logo) => (
+                  <React.Fragment key={logo.id}>{logo.element}</React.Fragment>
+                ))}
+              </div>
+
+              {/* Mobile layout: constantly moving horizontal scrolling marquee */}
+              <div className="w-full md:hidden overflow-hidden relative mask-marquee py-2">
+                <div className="flex w-max animate-marquee">
+                  <div className="flex items-center shrink-0">
+                    {mediaLogosList.map((logo) => (
+                      <div key={`${logo.id}-m1`} className="px-6">
+                        {logo.element}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex items-center shrink-0">
+                    {mediaLogosList.map((logo) => (
+                      <div key={`${logo.id}-m2`} className="px-6">
+                        {logo.element}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Also available on */}
             <div className="flex flex-col items-center">
-              <h3 className="font-sans text-lg md:text-xl text-on-surface dark:text-surface font-semibold mb-8 text-center tracking-wider">
-                Also available on
-              </h3>
-              <div className="flex flex-wrap justify-center items-center gap-10 md:gap-16 w-full max-w-4xl px-4">
-                {/* Blinkit */}
-                <div className="h-10 flex items-center justify-center opacity-85 hover:opacity-100 hover:scale-105 transition-all duration-300">
-                  <BlinkitLogo />
-                </div>
-                {/* Amazon */}
-                <div className="h-10 flex items-center justify-center opacity-85 hover:opacity-100 hover:scale-105 transition-all duration-300 dark:brightness-0 dark:invert">
-                  <Image
-                    src={amazonLogo}
-                    alt="Amazon"
-                    className="h-7 w-auto object-contain"
-                  />
-                </div>
-                {/* Flipkart */}
-                <div className="h-12 flex items-center justify-center opacity-85 hover:opacity-100 hover:scale-105 transition-all duration-300">
-                  <Image
-                    src={flipkartLogo}
-                    alt="Flipkart"
-                    className="h-10 w-auto object-contain"
-                  />
-                </div>
-                {/* Myntra */}
-                <div className="h-10 flex items-center justify-center opacity-85 hover:opacity-100 hover:scale-105 transition-all duration-300">
-                  <Image
-                    src={myntraLogo}
-                    alt="Myntra"
-                    className="h-8 w-auto object-contain"
-                  />
-                </div>
-                {/* Meesho */}
-                <div className="h-10 flex items-center justify-center opacity-85 hover:opacity-100 hover:scale-105 transition-all duration-300">
-                  <Image
-                    src={meeshoLogo}
-                    alt="Meesho"
-                    className="h-8 w-auto object-contain"
-                  />
+              <h2 className="font-headline-sm text-sm md:text-headline-sm text-on-surface dark:text-surface font-semibold mb-8 text-center uppercase tracking-widest">
+                ALSO AVAILABLE ON
+              </h2>
+
+              {/* Desktop layout: static flex-wrap */}
+              <div className="hidden md:flex flex-wrap justify-center items-center gap-10 md:gap-16 w-full max-w-4xl px-4">
+                {retailLogosList.map((logo) => (
+                  <React.Fragment key={logo.id}>{logo.element}</React.Fragment>
+                ))}
+              </div>
+
+              {/* Mobile layout: constantly moving horizontal scrolling marquee */}
+              <div className="w-full md:hidden overflow-hidden relative mask-marquee py-2">
+                <div className="flex w-max animate-marquee">
+                  <div className="flex items-center shrink-0">
+                    {retailLogosList.map((logo) => (
+                      <div key={`${logo.id}-m1`} className="px-6">
+                        {logo.element}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex items-center shrink-0">
+                    {retailLogosList.map((logo) => (
+                      <div key={`${logo.id}-m2`} className="px-6">
+                        {logo.element}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -2492,163 +2821,165 @@ export default function Home() {
         aria-modal="true"
         aria-hidden={!isCartOpen}
       >
-          <div className="absolute inset-0 overflow-hidden">
-            {/* Dark Backdrop */}
-            <div
-              onClick={() => setIsCartOpen(false)}
-              className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-500 ease-in-out ${isCartOpen ? "opacity-100" : "opacity-0"}`}
-            ></div>
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Dark Backdrop */}
+          <div
+            onClick={() => setIsCartOpen(false)}
+            className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-500 ease-in-out ${isCartOpen ? "opacity-100" : "opacity-0"}`}
+          ></div>
 
-            {/* Panel */}
-            <div className="absolute inset-y-0 right-0 flex max-w-full pl-10 pointer-events-none">
-              <div className={`w-screen max-w-md pointer-events-auto will-change-transform transition-transform duration-500 ease-out ${isCartOpen ? "translate-x-0" : "translate-x-full"}`}>
-                <div className="flex flex-col h-full bg-surface dark:bg-zinc-900 shadow-2xl border-l border-secondary-container/10">
-                  {/* Header */}
-                  <div className="px-6 py-6 border-b border-secondary-container/10 flex items-center justify-between">
-                    <h2 className="font-button text-lg uppercase tracking-wider text-on-surface dark:text-surface flex items-center gap-2 font-bold">
-                      <span className="material-symbols-outlined">
+          {/* Panel */}
+          <div className="absolute inset-y-0 right-0 flex max-w-full pl-10 pointer-events-none">
+            <div
+              className={`w-screen max-w-md pointer-events-auto will-change-transform transition-transform duration-500 ease-out ${isCartOpen ? "translate-x-0" : "translate-x-full"}`}
+            >
+              <div className="flex flex-col h-full bg-surface dark:bg-zinc-900 shadow-2xl border-l border-secondary-container/10">
+                {/* Header */}
+                <div className="px-6 py-6 border-b border-secondary-container/10 flex items-center justify-between">
+                  <h2 className="font-button text-lg uppercase tracking-wider text-on-surface dark:text-surface flex items-center gap-2 font-bold">
+                    <span className="material-symbols-outlined">
+                      shopping_bag
+                    </span>
+                    SHOPPING BAG ({cartTotalItems})
+                  </h2>
+                  <button
+                    onClick={() => setIsCartOpen(false)}
+                    className="text-on-surface dark:text-surface hover:text-primary p-2 cursor-pointer transition-colors"
+                    aria-label="Close cart"
+                  >
+                    <span className="material-symbols-outlined text-2xl">
+                      close
+                    </span>
+                  </button>
+                </div>
+
+                {/* Item List */}
+                <div className="flex-1 overflow-y-auto py-6 px-6 hide-scrollbar">
+                  {cart.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center h-full text-center gap-4">
+                      <span className="material-symbols-outlined text-6xl text-secondary-container">
                         shopping_bag
                       </span>
-                      SHOPPING BAG ({cartTotalItems})
-                    </h2>
-                    <button
-                      onClick={() => setIsCartOpen(false)}
-                      className="text-on-surface dark:text-surface hover:text-primary p-2 cursor-pointer transition-colors"
-                      aria-label="Close cart"
-                    >
-                      <span className="material-symbols-outlined text-2xl">
-                        close
-                      </span>
-                    </button>
-                  </div>
-
-                  {/* Item List */}
-                  <div className="flex-1 overflow-y-auto py-6 px-6 hide-scrollbar">
-                    {cart.length === 0 ? (
-                      <div className="flex flex-col items-center justify-center h-full text-center gap-4">
-                        <span className="material-symbols-outlined text-6xl text-secondary-container">
-                          shopping_bag
-                        </span>
-                        <p className="font-button text-sm uppercase tracking-widest text-on-surface-variant dark:text-secondary-fixed-dim">
-                          Your bag is empty
-                        </p>
-                        <button
-                          onClick={() => setIsCartOpen(false)}
-                          className="mt-2 border border-on-surface dark:border-surface text-on-surface dark:text-surface py-3 px-6 font-label-caps text-label-caps hover:bg-on-surface hover:text-surface dark:hover:bg-surface dark:hover:text-on-surface transition-colors cursor-pointer"
-                        >
-                          CONTINUE SHOPPING
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="space-y-6">
-                        {cart.map((item) => (
-                          <div
-                            key={item.id}
-                            className="flex gap-4 pb-6 border-b border-secondary-container/10"
-                          >
-                            <div className="w-20 h-24 bg-surface-container-low dark:bg-zinc-800 rounded-lg overflow-hidden shrink-0 border border-secondary-container/10">
-                              <Image
-                                className="w-full h-full object-cover"
-                                alt={item.name}
-                                src={item.image}
-                                width={80}
-                                height={96}
-                              />
-                            </div>
-
-                            <div className="flex-1 flex flex-col justify-between">
-                              <div>
-                                <div className="flex justify-between items-start">
-                                  <h3 className="font-button text-xs uppercase tracking-wider text-on-surface dark:text-surface font-semibold max-w-[80%]">
-                                    {item.name}
-                                  </h3>
-                                  <button
-                                    onClick={() => handleRemoveItem(item.id)}
-                                    className="text-on-surface-variant dark:text-secondary-container hover:text-error p-1 cursor-pointer"
-                                    aria-label="Remove item"
-                                  >
-                                    <span className="material-symbols-outlined text-sm">
-                                      delete
-                                    </span>
-                                  </button>
-                                </div>
-                                <p className="text-[10px] text-on-surface-variant dark:text-secondary-container font-label-caps uppercase mt-1 tracking-wider">
-                                  {item.size}
-                                </p>
-                              </div>
-
-                              <div className="flex justify-between items-center mt-2">
-                                {/* Quantity selector */}
-                                <div className="flex items-center border border-secondary-container/40 dark:border-zinc-700 rounded-md overflow-hidden bg-background dark:bg-zinc-850">
-                                  <button
-                                    onClick={() =>
-                                      handleUpdateQuantity(item.id, -1)
-                                    }
-                                    className="px-2 py-1 text-on-surface dark:text-surface hover:bg-secondary-container/20 cursor-pointer"
-                                    aria-label="Decrease quantity"
-                                  >
-                                    <span className="material-symbols-outlined text-xs select-none">
-                                      remove
-                                    </span>
-                                  </button>
-                                  <span className="px-3 font-button text-xs text-on-surface dark:text-surface font-bold select-none">
-                                    {item.quantity}
-                                  </span>
-                                  <button
-                                    onClick={() =>
-                                      handleUpdateQuantity(item.id, 1)
-                                    }
-                                    className="px-2 py-1 text-on-surface dark:text-surface hover:bg-secondary-container/20 cursor-pointer"
-                                    aria-label="Increase quantity"
-                                  >
-                                    <span className="material-symbols-outlined text-xs select-none">
-                                      add
-                                    </span>
-                                  </button>
-                                </div>
-
-                                <span className="font-button text-sm font-semibold text-on-surface dark:text-surface">
-                                  ₹{(item.price * item.quantity).toFixed(2)}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Summary & Checkout Footer */}
-                  {cart.length > 0 && (
-                    <div className="border-t border-secondary-container/10 px-6 py-6 bg-surface-container-low dark:bg-zinc-950/40">
-                      <div className="flex justify-between text-base font-semibold text-on-surface dark:text-surface mb-2">
-                        <span className="font-label-caps tracking-wider">
-                          SUBTOTAL
-                        </span>
-                        <span className="font-button">
-                          ₹{cartSubtotal.toFixed(2)}
-                        </span>
-                      </div>
-                      <p className="text-[11px] text-on-surface-variant dark:text-secondary-container mb-6 leading-tight">
-                        Shipping and taxes calculated at checkout. Complimentary
-                        domestic shipping applied.
+                      <p className="font-button text-sm uppercase tracking-widest text-on-surface-variant dark:text-secondary-fixed-dim">
+                        Your bag is empty
                       </p>
                       <button
-                        onClick={() => {
-                          showToast(
-                            "Checkout simulation initiated. Connecting to secure gateway...",
-                          );
-                        }}
-                        className="w-full bg-on-surface dark:bg-surface text-surface dark:text-on-surface py-4 font-button text-button uppercase tracking-[0.15em] hover:bg-primary-container hover:text-on-primary-container dark:hover:bg-primary-container dark:hover:text-on-primary-container transition-all duration-300 shadow cursor-pointer text-center font-bold"
+                        onClick={() => setIsCartOpen(false)}
+                        className="mt-2 border border-on-surface dark:border-surface text-on-surface dark:text-surface py-3 px-6 font-label-caps text-label-caps hover:bg-on-surface hover:text-surface dark:hover:bg-surface dark:hover:text-on-surface transition-colors cursor-pointer"
                       >
-                        PROCEED TO SECURE CHECKOUT
+                        CONTINUE SHOPPING
                       </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      {cart.map((item) => (
+                        <div
+                          key={item.id}
+                          className="flex gap-4 pb-6 border-b border-secondary-container/10"
+                        >
+                          <div className="w-20 h-24 bg-surface-container-low dark:bg-zinc-800 rounded-lg overflow-hidden shrink-0 border border-secondary-container/10">
+                            <Image
+                              className="w-full h-full object-cover"
+                              alt={item.name}
+                              src={item.image}
+                              width={80}
+                              height={96}
+                            />
+                          </div>
+
+                          <div className="flex-1 flex flex-col justify-between">
+                            <div>
+                              <div className="flex justify-between items-start">
+                                <h3 className="font-button text-xs uppercase tracking-wider text-on-surface dark:text-surface font-semibold max-w-[80%]">
+                                  {item.name}
+                                </h3>
+                                <button
+                                  onClick={() => handleRemoveItem(item.id)}
+                                  className="text-on-surface-variant dark:text-secondary-container hover:text-error p-1 cursor-pointer"
+                                  aria-label="Remove item"
+                                >
+                                  <span className="material-symbols-outlined text-sm">
+                                    delete
+                                  </span>
+                                </button>
+                              </div>
+                              <p className="text-[10px] text-on-surface-variant dark:text-secondary-container font-label-caps uppercase mt-1 tracking-wider">
+                                {item.size}
+                              </p>
+                            </div>
+
+                            <div className="flex justify-between items-center mt-2">
+                              {/* Quantity selector */}
+                              <div className="flex items-center border border-secondary-container/40 dark:border-zinc-700 rounded-md overflow-hidden bg-background dark:bg-zinc-850">
+                                <button
+                                  onClick={() =>
+                                    handleUpdateQuantity(item.id, -1)
+                                  }
+                                  className="px-2 py-1 text-on-surface dark:text-surface hover:bg-secondary-container/20 cursor-pointer"
+                                  aria-label="Decrease quantity"
+                                >
+                                  <span className="material-symbols-outlined text-xs select-none">
+                                    remove
+                                  </span>
+                                </button>
+                                <span className="px-3 font-button text-xs text-on-surface dark:text-surface font-bold select-none">
+                                  {item.quantity}
+                                </span>
+                                <button
+                                  onClick={() =>
+                                    handleUpdateQuantity(item.id, 1)
+                                  }
+                                  className="px-2 py-1 text-on-surface dark:text-surface hover:bg-secondary-container/20 cursor-pointer"
+                                  aria-label="Increase quantity"
+                                >
+                                  <span className="material-symbols-outlined text-xs select-none">
+                                    add
+                                  </span>
+                                </button>
+                              </div>
+
+                              <span className="font-button text-sm font-semibold text-on-surface dark:text-surface">
+                                ₹{(item.price * item.quantity).toFixed(2)}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>
+
+                {/* Summary & Checkout Footer */}
+                {cart.length > 0 && (
+                  <div className="border-t border-secondary-container/10 px-6 py-6 bg-surface-container-low dark:bg-zinc-950/40">
+                    <div className="flex justify-between text-base font-semibold text-on-surface dark:text-surface mb-2">
+                      <span className="font-label-caps tracking-wider">
+                        SUBTOTAL
+                      </span>
+                      <span className="font-button">
+                        ₹{cartSubtotal.toFixed(2)}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-on-surface-variant dark:text-secondary-container mb-6 leading-tight">
+                      Shipping and taxes calculated at checkout. Complimentary
+                      domestic shipping applied.
+                    </p>
+                    <button
+                      onClick={() => {
+                        showToast(
+                          "Checkout simulation initiated. Connecting to secure gateway...",
+                        );
+                      }}
+                      className="w-full bg-on-surface dark:bg-surface text-surface dark:text-on-surface py-4 font-button text-button uppercase tracking-[0.15em] hover:bg-primary-container hover:text-on-primary-container dark:hover:bg-primary-container dark:hover:text-on-primary-container transition-all duration-300 shadow cursor-pointer text-center font-bold"
+                    >
+                      PROCEED TO SECURE CHECKOUT
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
+        </div>
       </div>
 
       {/* Video Modal Overlay */}
@@ -2745,9 +3076,90 @@ export default function Home() {
         </div>
       )}
 
+      {/* Sticky Bottom Buy Bar */}
+      <div
+        style={{
+          paddingTop: "12px",
+          paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
+        }}
+        className={`fixed bottom-0 left-0 right-0 z-40 bg-surface/95 dark:bg-zinc-950/95 backdrop-blur-lg border-t border-secondary-container/30 dark:border-zinc-800/50 px-4 shadow-[0_-8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_-8px_30px_rgb(0,0,0,0.35)] transition-all duration-500 ease-in-out transform ${
+          showStickyBuy
+            ? "translate-y-0 opacity-100"
+            : "translate-y-full opacity-0 pointer-events-none"
+        }`}
+      >
+        <div className="max-w-4xl mx-auto flex items-center justify-between gap-4">
+          {/* Left Side: Product Thumbnail, Title, and Choice (Shown on desktop) */}
+          <div className="flex items-center gap-3 shrink-0 hidden md:flex">
+            <div className="w-10 h-10 rounded-md bg-surface-container-low dark:bg-zinc-800 border border-secondary-container/20 overflow-hidden shrink-0 relative">
+              <Image
+                src={snoreOffNabhiOil}
+                alt="Snore Off Nabhi Oil thumbnail"
+                fill
+                sizes="40px"
+                className="object-cover scale-150"
+              />
+            </div>
+            <div>
+              <p className="font-serif text-sm font-semibold text-on-surface dark:text-surface leading-tight">
+                Snore Off Nabhi Oil
+              </p>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="font-sans text-[10px] text-green-500 font-bold">
+                  {wellnessPack === "buy2" ? "Save ₹100 + Free Gift" : "Free Shipping"}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Side: Button Group (Half width on mobile, w-96 on desktop) */}
+          <div className="flex-1 md:flex-none flex items-center gap-3 w-full md:w-96">
+            {/* Add to Cart button (on the left) */}
+            <button
+              onClick={() => {
+                handleAddToCart(
+                  wellnessPack === "buy1" ? "snore-off-1" : "snore-off-2",
+                  wellnessPack === "buy1"
+                    ? "Snore Off Nabhi Oil (1 Pack)"
+                    : "Snore Off Nabhi Oil (2 Pack - Save ₹100)",
+                  wellnessPack === "buy1" ? 549 : 998,
+                  "/snore-off-nabhi-oil.png",
+                  wellnessPack === "buy1" ? "1 Bottle" : "2 Bottles",
+                );
+              }}
+              className="bg-surface-container-high hover:bg-surface-container-highest dark:bg-zinc-800 dark:hover:bg-zinc-700 text-on-surface dark:text-surface font-button font-bold px-4 h-11 flex-1 flex items-center justify-center gap-1.5 cursor-pointer transition-colors duration-300 text-xs uppercase tracking-wider rounded-md border border-secondary-container/30 dark:border-zinc-700/50"
+            >
+              <span className="material-symbols-outlined text-sm sm:text-base">
+                shopping_bag
+              </span>
+              <span>ADD TO CART</span>
+            </button>
+
+            {/* Buy Now button (on the right) */}
+            <button
+              onClick={() => {
+                handleAddToCart(
+                  wellnessPack === "buy1" ? "snore-off-1" : "snore-off-2",
+                  wellnessPack === "buy1"
+                    ? "Snore Off Nabhi Oil (1 Pack)"
+                    : "Snore Off Nabhi Oil (2 Pack - Save ₹100)",
+                  wellnessPack === "buy1" ? 549 : 998,
+                  "/snore-off-nabhi-oil.png",
+                  wellnessPack === "buy1" ? "1 Bottle" : "2 Bottles",
+                );
+                showToast("Connecting to secure payment gateway...");
+              }}
+              className="bg-primary-container hover:bg-primary-container/90 text-black font-button font-extrabold px-4 h-11 flex-1 flex items-center justify-center gap-1.5 cursor-pointer shadow-md hover:shadow-lg transition-colors duration-300 text-xs uppercase tracking-wider border border-primary-container/20 rounded-md"
+            >
+              <span>BUY NOW</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* Custom Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-on-surface dark:bg-surface text-surface dark:text-on-surface px-6 py-4 shadow-xl flex items-center gap-4 rounded-lg border border-primary-container/20 max-w-sm animate-slideInUp">
+        <div className={`fixed ${showStickyBuy ? "bottom-24 sm:bottom-20" : "bottom-6"} right-6 z-50 bg-on-surface dark:bg-surface text-surface dark:text-on-surface px-6 py-4 shadow-xl flex items-center gap-4 rounded-lg border border-primary-container/20 max-w-sm animate-slideInUp`}>
           <span className="material-symbols-outlined text-primary-container">
             check_circle
           </span>
