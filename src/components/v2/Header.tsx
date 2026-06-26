@@ -20,7 +20,7 @@ export default function Header({
   return (
     <header className="bg-surface/90 dark:bg-zinc-950/90 backdrop-blur-md text-on-surface dark:text-surface fixed top-0 left-0 right-0 border-b border-secondary-container/10 z-40 transition-colors duration-300">
       {/* Top Banner */}
-      <div className="bg-brand-button text-black text-center py-2 font-button text-[11px] font-bold uppercase tracking-widest">
+      <div className="bg-brand-button text-white text-center py-2 font-button text-[11px] font-bold uppercase tracking-widest">
         Stay ahead of your day.
       </div>
 
@@ -59,7 +59,9 @@ export default function Header({
           className="md:hidden text-on-surface dark:text-surface p-2 scale-95 active:opacity-80 transition-transform cursor-pointer"
           aria-label="Toggle mobile menu"
         >
-          <span className="material-symbols-outlined text-2xl font-light">menu</span>
+          <span className="material-symbols-outlined text-2xl font-light">
+            menu
+          </span>
         </button>
 
         {/* Brand Logo (Center) */}
