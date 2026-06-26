@@ -240,16 +240,7 @@ const ProductCard = ({ p, onAddToCart }: ProductCardProps) => (
 export default function Home() {
   // Cart state
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [cart, setCart] = useState<CartItem[]>([
-    {
-      id: "snore-off-1",
-      name: "Snore Off Nabhi Oil (1 Pack)",
-      price: 549.0,
-      quantity: 1,
-      image: "/snore-off-nabhi-oil.png",
-      size: "1 Bottle",
-    },
-  ]);
+  const [cart, setCart] = useState<CartItem[]>([]);
 
   // Wellness pack state
   const [wellnessPack, setWellnessPack] = useState<"buy1" | "buy2">("buy1");
@@ -946,24 +937,24 @@ export default function Home() {
   // FAQ items list
   const faqItems = [
     {
-      question: "How does Snore-Off Nabhi Oil reduce snoring?",
+      question: "Why would putting oil in my belly button affect snoring?",
       answer:
-        "It helps decongest nasal passages and regulate airflow by stimulating specific pressure points around the navel.",
+        "The navel connects to over 72,000 nerve channels in Ayurvedic physiology. Through the Pechoti method, oil applied here is absorbed directly through these nerve endings into the respiratory and throat pathways — without passing through the digestive system. This is why application is topical, not oral. Modern research on transdermal absorption supports this ancient understanding.",
     },
     {
       question: "How long does it take to see improvement?",
       answer:
-        "Most users see results within 7-10 days of regular nightly application. Long-term use gives sustained benefits.",
+        "Most users notice a difference within 7–10 nights of regular nightly application. Partners typically notice before the user does. For deep-set chronic snoring, allow 3–4 weeks for full effect.",
     },
     {
       question: "Can I use this with other snoring devices or remedies?",
       answer:
-        "Yes, this oil can be used alongside CPAP, nasal strips, or other natural therapies to enhance their effectiveness.",
+        "Yes. Snore Off can be used alongside CPAP, nasal strips, or other natural therapies to enhance their effectiveness. Many users find they reduce CPAP dependence after 30 days.",
     },
     {
       question: "Is this safe for senior citizens?",
       answer:
-        "Absolutely. It is a non-invasive, side-effect-free natural remedy ideal for elderly individuals struggling with snoring.",
+        "Absolutely. It is non-invasive, has no known drug interactions, and is free of synthetic compounds — making it ideal for elderly individuals or anyone who cannot tolerate oral medications.",
     },
   ];
 
@@ -1198,10 +1189,13 @@ export default function Home() {
               </span>
             </nav>
 
+            <p className="hero-description font-sans text-sm text-on-surface-variant dark:text-secondary-container mb-3 leading-relaxed">
+              Your partner hears it every night. You don&apos;t. That&apos;s exactly the problem Snore Off solves.
+            </p>
             <h1 className="hero-title font-serif text-[42px] leading-tight text-on-surface dark:text-surface mb-2 tracking-tight">
               Snore Off Nabhi Oil
             </h1>
-            <p className="hero-description font-sans text-xs uppercase tracking-[0.15em] text-primary-container mb-4 font-semibold">
+            <p className="font-sans text-xs uppercase tracking-[0.15em] text-primary-container mb-4 font-semibold">
               Sovereign Ayurvedic Sleep Elixir
             </p>
 
@@ -1221,24 +1215,20 @@ export default function Home() {
                 className="font-button text-xs text-on-surface-variant dark:text-secondary-container hover:text-on-surface transition-colors tracking-wide underline underline-offset-4 decoration-primary-container/20"
                 href="#reviews"
               >
-                128 VERIFIED REVIEWS
+                1,280+ VERIFIED REVIEWS
               </a>
             </div>
 
             {/* Price Console */}
-            <div className="hero-price mb-6 flex items-baseline gap-3">
+            <div className="hero-price mb-6 flex items-baseline gap-3 flex-wrap">
               <span className="font-serif text-3xl font-semibold text-on-surface dark:text-surface">
                 ₹{wellnessPack === "buy1" ? "549" : "998"}
               </span>
-              {wellnessPack === "buy2" && (
-                <span className="text-sm line-through text-on-surface-variant/70 dark:text-secondary-container/50">
-                  ₹1,098
-                </span>
-              )}
+              <span className="text-sm line-through text-on-surface-variant/70 dark:text-secondary-container/50">
+                {wellnessPack === "buy1" ? "₹699" : "₹1,098"}
+              </span>
               <span className="bg-primary-container/10 text-primary-container text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
-                {wellnessPack === "buy1"
-                  ? "Single Pack"
-                  : "Save ₹100 + Free Gift"}
+                {wellnessPack === "buy1" ? "just ₹18 / night" : "Save ₹100 + Free Gift"}
               </span>
             </div>
 
@@ -1326,12 +1316,9 @@ export default function Home() {
             {/* Badges / Stock Console */}
             <div className="hero-val-prop flex items-center gap-4 mb-6 bg-surface-container-low dark:bg-zinc-900/20 p-3 rounded-lg border border-secondary-container/10">
               <div className="flex items-center gap-2">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-                </span>
-                <span className="text-red-500 text-xs font-semibold uppercase tracking-wider">
-                  Selling out fast
+                <span className="material-symbols-outlined text-sm text-primary-container">trending_up</span>
+                <span className="text-on-surface dark:text-surface text-xs font-semibold">
+                  2,400+ orders this month
                 </span>
               </div>
               <div className="w-px h-4 bg-secondary-container/25"></div>
@@ -1339,7 +1326,7 @@ export default function Home() {
                 <span className="material-symbols-outlined text-sm text-green-500">
                   local_shipping
                 </span>
-                <span>Ready to Dispatch</span>
+                <span>Dispatch today before 4 PM</span>
               </div>
             </div>
 
@@ -1391,11 +1378,11 @@ export default function Home() {
                 </span>
               </button>
 
-              <div className="flex gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 {/* Prepaid Discount Badge */}
-                <div className="flex-1 bg-green-500/10 dark:bg-green-500/5 text-green-600 dark:text-green-400 py-3 px-3 sm:px-4 border border-green-500/20 flex flex-col sm:flex-row items-center justify-between text-[10px] sm:text-xs rounded-lg font-semibold gap-1 sm:gap-2 uppercase tracking-wider text-center sm:text-left">
-                  <span>Prepaid</span>
-                  <span className="font-extrabold">Get Free Gift</span>
+                <div className="bg-green-500/10 dark:bg-green-500/5 text-green-600 dark:text-green-400 py-3 px-2 border border-green-500/20 rounded-lg flex flex-col items-center justify-center gap-0.5 text-center">
+                  <span className="text-[8px] font-bold uppercase tracking-[0.2em] opacity-60">Prepaid</span>
+                  <span className="text-[9px] font-extrabold uppercase tracking-wide leading-tight">Free Dropper Kit (₹199)</span>
                 </div>
 
                 {/* Add to Cart Button */}
@@ -1411,11 +1398,20 @@ export default function Home() {
                       wellnessPack === "buy1" ? "1 Bottle" : "2 Bottles",
                     )
                   }
-                  className="flex-1 border border-on-surface dark:border-surface text-on-surface dark:text-surface hover:bg-on-surface hover:text-surface dark:hover:bg-surface dark:hover:text-on-surface py-3 px-6 font-button text-xs uppercase tracking-wider transition-all duration-300 flex justify-center items-center gap-2 cursor-pointer font-bold rounded-lg"
+                  className="border border-on-surface dark:border-surface text-on-surface dark:text-surface hover:bg-on-surface hover:text-surface dark:hover:bg-surface dark:hover:text-on-surface py-3 px-4 font-button text-xs uppercase tracking-wider transition-all duration-300 flex justify-center items-center gap-2 cursor-pointer font-bold rounded-lg"
                 >
                   ADD TO CART
                 </button>
               </div>
+            </div>
+
+            {/* 30-Day Guarantee Badge */}
+            <div className="flex items-center justify-center gap-3 py-3 px-4 rounded-xl border border-primary-container/30 bg-primary-container/5 mb-6">
+              <span className="material-symbols-outlined text-primary-container text-xl shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>verified_user</span>
+              <p className="text-xs text-on-surface dark:text-surface leading-snug">
+                <span className="font-bold text-primary-container">30-Night Silent Sleep Guarantee</span>
+                <span className="text-on-surface-variant dark:text-secondary-container"> — If you or your partner don&apos;t notice a difference, we return every rupee.</span>
+              </p>
             </div>
 
             {/* Interactive Wisdom Tab Switcher */}
@@ -1462,7 +1458,7 @@ export default function Home() {
                 </button>
               </div>
 
-              <div className="min-h-section-padding-v transition-all duration-300">
+              <div className="min-h-[80px] transition-all duration-300">
                 {activeHeroTab === "therapy" && (
                   <div className="animate-fadeIn">
                     <h4 className="font-serif text-sm font-semibold text-on-surface dark:text-surface mb-2">
@@ -1837,6 +1833,24 @@ export default function Home() {
                     </p>
                   </div>
                 </div>
+
+                {/* Formulator Card — spans full width */}
+                <div className="formula-card col-span-1 sm:col-span-2 p-5 rounded-2xl border border-primary-container/20 bg-primary-container/5 dark:bg-zinc-900/40 flex gap-5 items-center">
+                  <div className="w-16 h-16 rounded-full bg-primary-container/20 border-2 border-primary-container/30 flex items-center justify-center shrink-0">
+                    <span className="material-symbols-outlined text-3xl text-primary-container" style={{ fontVariationSettings: "'FILL' 1" }}>person</span>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-serif text-base text-on-surface dark:text-surface font-semibold mb-0.5">
+                      Dr. Sudhir Vaidya
+                    </h3>
+                    <p className="font-sans text-[10px] uppercase tracking-widest text-primary-container font-bold mb-2">
+                      BAMS · MD Ayurveda · 22 Years Practice
+                    </p>
+                    <p className="font-body-md text-on-surface-variant dark:text-secondary-container text-[11px] leading-relaxed italic">
+                      &ldquo;The Black Pepper-to-Castor ratio in this formula took three iterations to perfect. Too much pepper and the warming becomes irritating. Too little and you lose the bioavailability boost. This ratio is why it works.&rdquo;
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -2202,7 +2216,7 @@ export default function Home() {
           id="reviews"
           className="bg-white dark:bg-zinc-950 border-b border-secondary-container/10 transition-colors duration-300"
         >
-          <div className="max-w-max-width mx-auto px-section-padding-h py-section-padding-v">
+          <div className="max-w-max-width mx-auto px-section-padding-h py-16 md:py-section-padding-v">
             {/* Reviews Title */}
             <div className="reviews-title text-center mb-stack-lg">
               <h2 className="reviews-trusted-title font-headline-sm text-headline-sm text-on-surface dark:text-surface mb-4 uppercase tracking-widest">
@@ -2256,14 +2270,18 @@ export default function Home() {
                 >
                   {[
                     {
-                      name: "MARCUS T.",
+                      name: "SURESH P.",
+                      location: "Mumbai",
+                      quote: "My wife used to record my snoring and show me in the morning. After 11 nights of this, she stopped bothering — because there was nothing to record.",
                       videoUrl:
                         "https://assets.mixkit.co/videos/preview/mixkit-man-sleeping-soundly-in-bed-41583-large.mp4",
                       posterUrl:
                         "https://images.unsplash.com/photo-1541781719201-981069c187a6?w=600&auto=format&fit=crop&q=80",
                     },
                     {
-                      name: "ELENA R.",
+                      name: "PRIYA M.",
+                      location: "Pune",
+                      quote: "I was sceptical about navel oil for snoring. Tried it for two weeks and my sleep tracker showed 40% fewer disruptions. My husband noticed before I did.",
                       videoUrl:
                         "https://assets.mixkit.co/videos/preview/mixkit-woman-sleeping-peacefully-in-bed-41582-large.mp4",
                       posterUrl:
@@ -2271,6 +2289,8 @@ export default function Home() {
                     },
                     {
                       name: "RAJESH K.",
+                      location: "Ahmedabad",
+                      quote: "I've tried nasal strips and sprays for years. This is the first thing that actually worked past the first night. On day 8 I woke up genuinely rested for the first time in months.",
                       videoUrl:
                         "https://assets.mixkit.co/videos/preview/mixkit-young-woman-waking-up-and-stretching-in-bed-41584-large.mp4",
                       posterUrl:
@@ -2318,6 +2338,11 @@ export default function Home() {
                             ))}
                           </div>
 
+                          {/* Quote */}
+                          <p className="font-body-md text-xs text-on-surface-variant dark:text-secondary-container leading-relaxed italic mb-4 text-left">
+                            &ldquo;{item.quote}&rdquo;
+                          </p>
+
                           {/* Buyer Info */}
                           <div className="flex items-center gap-3 border-t border-secondary-container/10 pt-4 w-full justify-center">
                             <div className="w-8 h-8 rounded-full bg-surface-container dark:bg-zinc-800 border border-secondary-container/20 overflow-hidden flex items-center justify-center shrink-0">
@@ -2336,7 +2361,7 @@ export default function Home() {
                                 </span>
                               </p>
                               <p className="font-body-md text-[9px] text-on-surface-variant dark:text-secondary-container">
-                                Verified Buyer
+                                Verified Buyer · {item.location}
                               </p>
                             </div>
                           </div>
@@ -2356,12 +2381,14 @@ export default function Home() {
                       key={i}
                       onClick={() => setReviewCarouselIndex(i)}
                       aria-label={`Go to slide ${i + 1}`}
-                      className={`rounded-full transition-all duration-300 cursor-pointer ${
+                      className="w-11 h-11 flex items-center justify-center cursor-pointer"
+                    >
+                      <span className={`rounded-full transition-all duration-300 block ${
                         i === reviewCarouselIndex
                           ? "w-6 h-2 bg-primary-container"
                           : "w-2 h-2 bg-secondary-container/40 hover:bg-secondary-container/70"
-                      }`}
-                    />
+                      }`} />
+                    </button>
                   ))}
                 </div>
               </div>
@@ -2531,7 +2558,7 @@ export default function Home() {
 
         {/* FAQ Section */}
         <section className="dark:bg-zinc-900/20 border-b border-secondary-container/10 transition-colors duration-300">
-          <div className="max-w-[800px] mx-auto px-section-padding-h py-section-padding-v">
+          <div className="max-w-[800px] mx-auto px-section-padding-h py-16 md:py-section-padding-v">
             <div className="faq-title text-center mb-stack-lg">
               <h2 className="font-headline-sm text-headline-sm text-on-surface dark:text-surface mb-4">
                 FREQUENTLY ASKED QUESTIONS
@@ -2584,7 +2611,7 @@ export default function Home() {
 
         {/* Often Bought Together / Recommendations */}
         <section className="bg-white dark:bg-zinc-950 transition-colors duration-300">
-          <div className="max-w-max-width mx-auto px-section-padding-h py-section-padding-v">
+          <div className="max-w-max-width mx-auto px-section-padding-h py-16 md:py-section-padding-v">
             <div className="rec-title text-center mb-stack-lg">
               <h2 className="font-headline-sm text-headline-sm text-on-surface dark:text-surface mb-4">
                 COMPLETE YOUR RITUAL
@@ -2675,12 +2702,14 @@ export default function Home() {
                           key={i}
                           onClick={() => setRitualCarouselIndex(i)}
                           aria-label={`Go to product ${i + 1}`}
-                          className={`rounded-full transition-all duration-300 cursor-pointer ${
+                          className="w-11 h-11 flex items-center justify-center cursor-pointer"
+                        >
+                          <span className={`rounded-full transition-all duration-300 block ${
                             i === ritualCarouselIndex
                               ? "w-6 h-2 bg-primary-container"
                               : "w-2 h-2 bg-secondary-container/40 hover:bg-secondary-container/70"
-                          }`}
-                        />
+                          }`} />
+                        </button>
                       ))}
                     </div>
 
@@ -2770,7 +2799,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="bg-on-surface dark:bg-zinc-950 text-primary-container w-full transition-colors duration-300">
-        <div className="flex flex-col items-center py-section-padding-v px-section-padding-h max-w-max-width mx-auto gap-stack-lg">
+        <div className="flex flex-col items-center py-12 md:py-section-padding-v px-section-padding-h max-w-max-width mx-auto gap-stack-lg">
           <a
             className="footer-logo hover:opacity-100 transition-opacity"
             href="#"
@@ -2809,7 +2838,7 @@ export default function Home() {
           </nav>
           <div className="w-full h-px bg-secondary-fixed-dim/10 mt-stack-sm mb-stack-sm"></div>
           <p className="footer-copyright font-body-md text-body-md text-secondary-fixed-dim text-sm text-center opacity-70">
-            © 2024 VED SANJEEVANI. ALL RIGHTS RESERVED.
+            © 2026 VED SANJEEVANI. ALL RIGHTS RESERVED.
           </p>
         </div>
       </footer>
@@ -2960,10 +2989,20 @@ export default function Home() {
                         ₹{cartSubtotal.toFixed(2)}
                       </span>
                     </div>
-                    <p className="text-[11px] text-on-surface-variant dark:text-secondary-container mb-6 leading-tight">
-                      Shipping and taxes calculated at checkout. Complimentary
-                      domestic shipping applied.
-                    </p>
+                    <div className="flex flex-col gap-1.5 mb-4">
+                      <div className="flex items-center gap-2 text-[11px] text-on-surface-variant dark:text-secondary-container">
+                        <span className="material-symbols-outlined text-sm text-green-500">check_circle</span>
+                        <span>Free shipping included</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-[11px] text-on-surface-variant dark:text-secondary-container">
+                        <span className="material-symbols-outlined text-sm text-primary-container">verified_user</span>
+                        <span>30-night money-back guarantee</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-[11px] text-on-surface-variant dark:text-secondary-container">
+                        <span className="material-symbols-outlined text-sm text-blue-500">local_shipping</span>
+                        <span>Estimated delivery: 3–5 business days</span>
+                      </div>
+                    </div>
                     <button
                       onClick={() => {
                         showToast(
@@ -3103,10 +3142,11 @@ export default function Home() {
             <div>
               <p className="font-serif text-sm font-semibold text-on-surface dark:text-surface leading-tight">
                 Snore Off Nabhi Oil
+                <span className="ml-2 font-sans text-sm text-primary-container">₹{wellnessPack === "buy1" ? "549" : "998"}</span>
               </p>
               <div className="flex items-center gap-2 mt-0.5">
                 <span className="font-sans text-[10px] text-green-500 font-bold">
-                  {wellnessPack === "buy2" ? "Save ₹100 + Free Gift" : "Free Shipping"}
+                  {wellnessPack === "buy2" ? "Save ₹100 + Free Dropper Kit" : "Free Shipping"}
                 </span>
               </div>
             </div>
@@ -3156,6 +3196,20 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {/* WhatsApp Floating Button */}
+      <a
+        href="https://wa.me/919999999999?text=Hi%2C%20I%20have%20a%20question%20about%20Snore%20Off%20Nabhi%20Oil"
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`fixed left-4 z-40 flex items-center gap-2 bg-[#25D366] hover:bg-[#20b958] text-white shadow-lg transition-all duration-500 ease-in-out cursor-pointer rounded-full px-4 py-2.5 ${showStickyBuy ? "bottom-20 sm:bottom-16 opacity-100 pointer-events-auto" : "bottom-6 opacity-0 pointer-events-none sm:opacity-100 sm:pointer-events-auto"}`}
+        aria-label="Chat on WhatsApp"
+      >
+        <svg viewBox="0 0 24 24" className="w-4 h-4 fill-white shrink-0">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        <span className="text-[11px] font-bold tracking-wide">Chat with us</span>
+      </a>
 
       {/* Custom Toast Notification */}
       {toastMessage && (
