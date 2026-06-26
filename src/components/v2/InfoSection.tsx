@@ -93,7 +93,7 @@ export default function InfoSection() {
   ];
 
   return (
-    <section id="science" className="max-w-3xl mx-auto px-4 pt-4 md:pt-6 pb-12 md:pb-16 transition-colors duration-300">
+    <section id="science" className="w-full max-w-max-width mx-auto px-4 md:px-section-padding-h pt-4 md:pt-6 pb-12 md:pb-16 transition-colors duration-300">
       {/* Accordions */}
       <div className="flex flex-col border-t border-secondary-container/20">
         {accordionItems.map((item, idx) => (

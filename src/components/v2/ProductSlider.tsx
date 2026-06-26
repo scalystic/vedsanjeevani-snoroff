@@ -41,10 +41,10 @@ export default function ProductSlider({ onAddToCart }: ProductSliderProps) {
   ];
 
   return (
-    <section className="bg-white dark:bg-zinc-950 py-16 md:py-24 transition-colors duration-300">
+    <section className="bg-white dark:bg-zinc-950 py-16 md:py-14 transition-colors duration-300">
       <div className="max-w-max-width mx-auto px-4 md:px-section-padding-h">
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-16 md:mb-8">
           <div className="flex items-center justify-center gap-1 text-brand-button mb-2">
             <span className="material-symbols-outlined text-lg">
               shopping_basket
@@ -54,28 +54,28 @@ export default function ProductSlider({ onAddToCart }: ProductSliderProps) {
             </span>
           </div>
           <h2 className="font-serif text-3xl md:text-4xl text-brand-heading font-bold tracking-tight">
-            ONE METHOD. MANY CONCERNS. BUILD YOUR NABHI RITUAL.
+            ONE METHOD. MANY CONCERNS.<br />BUILD YOUR NABHI RITUAL.
           </h2>
           <div className="w-12 h-px bg-brand-button mx-auto mt-4"></div>
         </div>
 
         {/* Product Cards Grid */}
-        <div className="grid grid-cols-2 gap-3 md:gap-8">
+        <div className="grid grid-cols-2 gap-3 md:gap-6 md:max-w-2xl mx-auto">
           {suggestedProducts.map((p) => (
             <div
               key={p.id}
-              className="bg-zinc-50 dark:bg-zinc-900/10 border border-secondary-container/10 p-2 md:p-6 rounded-2xl md:rounded-3xl flex flex-col justify-between group hover:border-brand-button/30 hover:shadow-lg transition-all duration-300 relative"
+              className="bg-zinc-50 dark:bg-zinc-900/10 border border-secondary-container/10 p-2 md:p-4 rounded-2xl flex flex-col justify-between group hover:border-brand-button/30 hover:shadow-lg transition-all duration-300 relative"
             >
               {/* Rating Badge top-right */}
-              <div className="absolute top-2 right-2 md:top-4 md:right-4 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xs border border-secondary-container/15 px-1.5 py-0.5 md:px-2.5 md:py-1 rounded-full text-[8px] md:text-[10px] font-black text-on-surface dark:text-surface flex items-center gap-0.5 select-none z-10">
-                <span className="text-brand-button text-[8px] md:text-xs">
+              <div className="absolute top-2 right-2 md:top-3 md:right-3 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xs border border-secondary-container/15 px-1.5 py-0.5 md:px-2 md:py-0.5 rounded-full text-[8px] md:text-[10px] font-black text-on-surface dark:text-surface flex items-center gap-0.5 select-none z-10">
+                <span className="text-brand-button text-[8px] md:text-[10px]">
                   ★
                 </span>{" "}
                 {p.rating}
               </div>
 
               {/* Product Photo — large, dominant */}
-              <div className="aspect-square bg-white dark:bg-zinc-950/50 p-2 mb-2 md:mb-6 rounded-xl md:rounded-2xl flex items-center justify-center overflow-hidden border border-secondary-container/5">
+              <div className="aspect-square md:aspect-auto md:h-52 bg-white dark:bg-zinc-950/50 p-2 mb-2 md:mb-3 rounded-xl flex items-center justify-center overflow-hidden border border-secondary-container/5">
                 <Image
                   src={p.image}
                   alt={p.name}
@@ -84,13 +84,13 @@ export default function ProductSlider({ onAddToCart }: ProductSliderProps) {
               </div>
 
               {/* Text Info — compact on mobile */}
-              <div className="flex flex-col gap-1 md:gap-0">
-                <h3 className="font-serif text-[11px] md:text-lg font-bold text-on-surface dark:text-surface leading-tight md:mb-2">
+              <div className="flex flex-col gap-1">
+                <h3 className="font-serif text-[11px] md:text-sm font-bold text-on-surface dark:text-surface leading-tight md:mb-1">
                   {p.name}
                 </h3>
 
                 {/* Tags — hidden on mobile to save space */}
-                <div className="hidden md:flex flex-wrap gap-1.5 mb-4">
+                <div className="hidden md:flex flex-wrap gap-1 mb-2">
                   {p.tags.map((tag, idx) => (
                     <span
                       key={idx}
@@ -102,8 +102,8 @@ export default function ProductSlider({ onAddToCart }: ProductSliderProps) {
                 </div>
 
                 {/* Price */}
-                <div className="flex items-baseline gap-1 md:gap-2 mb-2 md:mb-6">
-                  <span className="font-sans text-[11px] md:text-lg font-black text-brand-button">
+                <div className="flex items-baseline gap-1 md:gap-1.5 mb-2 md:mb-3">
+                  <span className="font-sans text-[11px] md:text-sm font-black text-brand-button">
                     ₹{p.price}
                   </span>
                   {p.originalPrice !== p.price && (
@@ -118,7 +118,7 @@ export default function ProductSlider({ onAddToCart }: ProductSliderProps) {
                   onClick={() =>
                     onAddToCart(p.id, p.name, p.price, p.imageSrc, p.size)
                   }
-                  className="w-full bg-brand-button hover:bg-brand-button/90 text-white font-extrabold py-1.5 md:py-3 px-2 md:px-4 rounded-full transition-all duration-300 font-button tracking-wider text-[8px] md:text-xs cursor-pointer shadow-xs"
+                  className="w-full bg-brand-button hover:bg-brand-button/90 text-white font-extrabold py-1.5 md:py-2 px-2 md:px-3 rounded-full transition-all duration-300 font-button tracking-wider text-[8px] md:text-xs cursor-pointer shadow-xs"
                 >
                   ADD TO CART
                 </button>

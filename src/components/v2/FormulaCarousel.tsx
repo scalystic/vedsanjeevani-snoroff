@@ -151,104 +151,89 @@ export default function FormulaCarousel() {
           />
         </div>
 
-        {/* Ingredient Cards Carousel */}
-        <div
-          ref={scrollRef}
-          onScroll={handleScroll}
-          onMouseDown={onMouseDown}
-          onMouseMove={onMouseMove}
-          onMouseUp={stopDrag}
-          onMouseLeave={stopDrag}
-          className="flex gap-4 overflow-x-auto pb-2 cursor-grab active:cursor-grabbing"
-          style={{
-            scrollSnapType: "x mandatory",
-            WebkitOverflowScrolling: "touch",
-            scrollbarWidth: "none",
-            msOverflowStyle: "none",
-          }}
-        >
-          <style>{`
-            .formula-track::-webkit-scrollbar { display: none; }
-          `}</style>
+        {/* Mobile: Carousel slider */}
+        <div className="md:hidden">
+          <div
+            ref={scrollRef}
+            onScroll={handleScroll}
+            onMouseDown={onMouseDown}
+            onMouseMove={onMouseMove}
+            onMouseUp={stopDrag}
+            onMouseLeave={stopDrag}
+            className="flex gap-4 overflow-x-auto pb-2 cursor-grab active:cursor-grabbing"
+            style={{
+              scrollSnapType: "x mandatory",
+              WebkitOverflowScrolling: "touch",
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+            }}
+          >
+            {/* left spacer */}
+            <div className="shrink-0 w-[calc(50vw-140px)]" aria-hidden />
 
-          {/* left spacer */}
-          <div className="shrink-0 w-[calc(50vw-140px)] md:w-[calc(50%-160px)]" aria-hidden />
+            {ingredients.map((ing, idx) => (
+              <div
+                key={idx}
+                ref={(el) => { cardRefs.current[idx] = el; }}
+                onClick={() => setActiveIndex(idx)}
+                style={{ scrollSnapAlign: "center" }}
+                className={`
+                  shrink-0 w-[260px] sm:w-[280px]
+                  p-6 rounded-2xl flex flex-col items-center text-center
+                  cursor-pointer select-none
+                  transition-all duration-300
+                  ${activeIndex === idx ? "scale-105 opacity-100" : "scale-95 opacity-50"}
+                `}
+              >
+                <Image src={ing.image} alt={ing.name} width={96} height={96} className="w-20 h-20 sm:w-24 sm:h-24 object-contain mb-5 rounded-md" />
+                <span className="inline-block bg-black/5 dark:bg-white/10 text-on-surface-variant dark:text-secondary-container text-[9px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2">
+                  {ing.type}
+                </span>
+                <h3 className="font-serif text-lg font-bold text-on-surface dark:text-surface mb-2">{ing.name}</h3>
+                <p className="font-sans text-xs text-on-surface-variant dark:text-secondary-container leading-relaxed">{ing.description}</p>
+              </div>
+            ))}
 
+            {/* right spacer */}
+            <div className="shrink-0 w-[calc(50vw-140px)]" aria-hidden />
+          </div>
+
+          {/* Navigation dots + arrows */}
+          <div className="flex items-center justify-center gap-6 mt-4">
+            <button onClick={handlePrev} className="w-9 h-9 flex items-center justify-center rounded-full text-on-surface/60 hover:text-on-surface transition-colors cursor-pointer" aria-label="Previous ingredient">
+              <span className="material-symbols-outlined text-xl">chevron_left</span>
+            </button>
+            <div className="flex gap-2 items-center">
+              {ingredients.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setActiveIndex(idx)}
+                  aria-label={`Go to ingredient ${idx + 1}`}
+                  className={`rounded-full transition-all duration-300 cursor-pointer ${activeIndex === idx ? "w-5 h-2 bg-brand-button" : "w-2 h-2 bg-secondary-container/30"}`}
+                />
+              ))}
+            </div>
+            <button onClick={handleNext} className="w-9 h-9 flex items-center justify-center rounded-full text-on-surface/60 hover:text-on-surface transition-colors cursor-pointer" aria-label="Next ingredient">
+              <span className="material-symbols-outlined text-xl">chevron_right</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Desktop: Static row — all 4 ingredients side by side */}
+        <div className="hidden md:grid md:grid-cols-4 gap-6">
           {ingredients.map((ing, idx) => (
             <div
               key={idx}
-              ref={(el) => { cardRefs.current[idx] = el; }}
-              onClick={() => setActiveIndex(idx)}
-              style={{ scrollSnapAlign: "center" }}
-              className={`
-                shrink-0 w-[260px] sm:w-[280px] md:w-[300px]
-                p-6 rounded-2xl flex flex-col items-center text-center
-                cursor-pointer select-none
-                transition-all duration-300
-                ${activeIndex === idx ? "scale-105 opacity-100" : "scale-95 opacity-50"}
-              `}
+              className="p-6 rounded-2xl flex flex-col items-center text-center border border-secondary-container/10 bg-white/60 dark:bg-zinc-900/20"
             >
-              {/* Ingredient image — no container div */}
-              <Image
-                src={ing.image}
-                alt={ing.name}
-                width={96}
-                height={96}
-                className="w-20 h-20 sm:w-24 sm:h-24 object-contain mb-5"
-              />
-
-              {/* Type badge */}
-              <span className="inline-block bg-black/5 dark:bg-white/10 text-on-surface-variant dark:text-secondary-container text-[9px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2">
+              <Image src={ing.image} alt={ing.name} width={120} height={120} className="w-28 h-28 object-contain mb-4 rounded-md" />
+              <span className="inline-block bg-black/5 dark:bg-white/10 text-on-surface-variant dark:text-secondary-container text-[8px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider mb-1.5">
                 {ing.type}
               </span>
-
-              <h3 className="font-serif text-lg font-bold text-on-surface dark:text-surface mb-2">
-                {ing.name}
-              </h3>
-
-              <p className="font-sans text-xs text-on-surface-variant dark:text-secondary-container leading-relaxed">
-                {ing.description}
-              </p>
+              <h3 className="font-serif text-sm font-bold text-on-surface dark:text-surface mb-1.5">{ing.name}</h3>
+              <p className="font-sans text-[10px] text-on-surface-variant dark:text-secondary-container leading-relaxed">{ing.description}</p>
             </div>
           ))}
-
-          {/* right spacer */}
-          <div className="shrink-0 w-[calc(50vw-140px)] md:w-[calc(50%-160px)]" aria-hidden />
-        </div>
-
-        {/* Navigation */}
-        <div className="flex items-center justify-center gap-6 mt-4">
-          <button
-            onClick={handlePrev}
-            className="w-9 h-9 flex items-center justify-center rounded-full text-on-surface/60 hover:text-on-surface transition-colors cursor-pointer"
-            aria-label="Previous ingredient"
-          >
-            <span className="material-symbols-outlined text-xl">chevron_left</span>
-          </button>
-
-          {/* Dot indicators */}
-          <div className="flex gap-2 items-center">
-            {ingredients.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setActiveIndex(idx)}
-                aria-label={`Go to ingredient ${idx + 1}`}
-                className={`rounded-full transition-all duration-300 cursor-pointer ${
-                  activeIndex === idx
-                    ? "w-5 h-2 bg-brand-button"
-                    : "w-2 h-2 bg-secondary-container/30"
-                }`}
-              />
-            ))}
-          </div>
-
-          <button
-            onClick={handleNext}
-            className="w-9 h-9 flex items-center justify-center rounded-full text-on-surface/60 hover:text-on-surface transition-colors cursor-pointer"
-            aria-label="Next ingredient"
-          >
-            <span className="material-symbols-outlined text-xl">chevron_right</span>
-          </button>
         </div>
 
       </div>
