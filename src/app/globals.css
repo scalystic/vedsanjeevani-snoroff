@@ -3,6 +3,8 @@
 @variant dark (&:where(.dark, .dark *));
 
 @theme {
+  --color-brand-heading: #a47049;
+  --color-brand-button: #d1ab66;
   --color-on-surface: #1a1c1c;
   --color-on-secondary-container: #636262;
   --color-on-background: #1a1c1c;
@@ -67,6 +69,7 @@
   --font-display-lg: var(--font-trajan-pro), "Times New Roman", Times, serif;
   --font-body-md: var(--font-myriad-pro), "Times New Roman", Times, serif;
   --font-headline-md: var(--font-trajan-pro), "Times New Roman", Times, serif;
+  --font-serif: var(--font-trajan-pro), "Times New Roman", Times, serif;
 
   /* Typography sizes & sub-keys for Tailwind CSS v4 */
   --text-display-lg-mobile: 44px;
@@ -124,10 +127,12 @@ body {
 }
 
 /* Custom scrollbar hide */
-.hide-scrollbar::-webkit-scrollbar {
+.hide-scrollbar::-webkit-scrollbar,
+.scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
-.hide-scrollbar {
+.hide-scrollbar,
+.scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }

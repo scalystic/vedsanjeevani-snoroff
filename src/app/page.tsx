@@ -277,7 +277,7 @@ export default function Home() {
 
   // Accordion active index state
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
-  const [ritualCarouselIndex, setRitualCarouselIndex] = useState(0);
+
 
   // Active hero information tab state
   const [activeHeroTab, setActiveHeroTab] = useState<
@@ -1204,7 +1204,7 @@ export default function Home() {
                 {[1, 2, 3, 4, 5].map((_, i) => (
                   <span
                     key={i}
-                    className="material-symbols-outlined select-none text-lg"
+                    className="material-symbols-outlined select-none !text-lg"
                     style={{ fontVariationSettings: "'FILL' 1" }}
                   >
                     star
@@ -2330,7 +2330,7 @@ export default function Home() {
                             {[1, 2, 3, 4, 5].map((_, i) => (
                               <span
                                 key={i}
-                                className="material-symbols-outlined text-base"
+                                className="material-symbols-outlined !text-base"
                                 style={{ fontVariationSettings: "'FILL' 1" }}
                               >
                                 star
@@ -2427,7 +2427,7 @@ export default function Home() {
                   {[1, 2, 3, 4, 5].map((_, i) => (
                     <span
                       key={i}
-                      className="material-symbols-outlined text-2xl md:text-3xl"
+                      className="material-symbols-outlined !text-2xl md:!text-3xl"
                       style={{ fontVariationSettings: "'FILL' 1" }}
                     >
                       star
@@ -2467,12 +2467,12 @@ export default function Home() {
                 ].map((row) => (
                   <div key={row.stars} className="flex items-center gap-3 w-full">
                     {/* Stars Label */}
-                    <div className="flex items-center gap-1 w-12 justify-end shrink-0">
+                    <div className="flex items-center gap-1 w-14 justify-end shrink-0">
                       <span className="font-body-md text-xs font-bold text-on-surface dark:text-surface">
                         {row.stars}
                       </span>
                       <span
-                        className="material-symbols-outlined text-sm text-primary-container"
+                        className="material-symbols-outlined !text-sm text-primary-container"
                         style={{ fontVariationSettings: "'FILL' 1" }}
                       >
                         star
@@ -2611,9 +2611,9 @@ export default function Home() {
 
         {/* Often Bought Together / Recommendations */}
         <section className="bg-white dark:bg-zinc-950 transition-colors duration-300">
-          <div className="max-w-max-width mx-auto px-section-padding-h py-16 md:py-section-padding-v">
-            <div className="rec-title text-center mb-stack-lg">
-              <h2 className="font-headline-sm text-headline-sm text-on-surface dark:text-surface mb-4">
+          <div className="max-w-max-width mx-auto px-4 md:px-section-padding-h py-10 md:py-section-padding-v">
+            <div className="rec-title text-center mb-6 md:mb-stack-lg">
+              <h2 className="font-headline-sm text-xl md:text-headline-sm text-on-surface dark:text-surface mb-3">
                 COMPLETE YOUR RITUAL
               </h2>
               <div className="w-12 h-px bg-primary-container mx-auto"></div>
@@ -2653,69 +2653,65 @@ export default function Home() {
                 },
               ];
 
-              const total = ritualProducts.length;
-              const prev = () =>
-                setRitualCarouselIndex((i) => (i - 1 + total) % total);
-              const next = () => setRitualCarouselIndex((i) => (i + 1) % total);
-              const product = ritualProducts[ritualCarouselIndex];
-
               return (
                 <>
-                  {/* Desktop: 3-column grid */}
-                  <div className="hidden md:grid grid-cols-3 gap-stack-md">
+                  {/* Desktop: 3-column grid (hidden on mobile) */}
+                  <div className="hidden md:grid md:grid-cols-3 gap-stack-md">
                     {ritualProducts.map((p) => (
                       <ProductCard key={p.id} p={p} onAddToCart={handleAddToCart} />
                     ))}
                   </div>
 
-                  {/* Mobile: single-product carousel */}
-                  <div className="flex md:hidden flex-col items-center gap-6">
-                    <div className="relative w-full max-w-sm mx-auto">
-                      <button
-                        onClick={prev}
-                        aria-label="Previous product"
-                        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 z-10 w-10 h-10 flex items-center justify-center rounded-full border border-secondary-container/30 bg-surface dark:bg-zinc-900 hover:border-primary-container/60 hover:bg-surface-container-low dark:hover:bg-zinc-800 transition-all shadow-sm cursor-pointer"
-                      >
-                        <span className="material-symbols-outlined text-xl text-on-surface dark:text-surface">
-                          chevron_left
-                        </span>
-                      </button>
-
-                      <div key={ritualCarouselIndex}>
-                        <ProductCard p={product} onAddToCart={handleAddToCart} />
-                      </div>
-
-                      <button
-                        onClick={next}
-                        aria-label="Next product"
-                        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 z-10 w-10 h-10 flex items-center justify-center rounded-full border border-secondary-container/30 bg-surface dark:bg-zinc-900 hover:border-primary-container/60 hover:bg-surface-container-low dark:hover:bg-zinc-800 transition-all shadow-sm cursor-pointer"
-                      >
-                        <span className="material-symbols-outlined text-xl text-on-surface dark:text-surface">
-                          chevron_right
-                        </span>
-                      </button>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      {ritualProducts.map((_, i) => (
-                        <button
-                          key={i}
-                          onClick={() => setRitualCarouselIndex(i)}
-                          aria-label={`Go to product ${i + 1}`}
-                          className="w-11 h-11 flex items-center justify-center cursor-pointer"
+                  {/* Mobile: 2-column grid (first 2 products only, hidden on md+) */}
+                  <div className="block md:hidden w-full">
+                    <div
+                      className="gap-3 mb-4"
+                      style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}
+                    >
+                      {ritualProducts.slice(0, 2).map((p) => (
+                        <div
+                          key={p.id}
+                          className="bg-surface dark:bg-zinc-900/30 border border-secondary-container/20 dark:border-zinc-800 rounded-2xl p-3 flex flex-col items-center text-center hover:border-primary-container/40 transition-all"
                         >
-                          <span className={`rounded-full transition-all duration-300 block ${
-                            i === ritualCarouselIndex
-                              ? "w-6 h-2 bg-primary-container"
-                              : "w-2 h-2 bg-secondary-container/40 hover:bg-secondary-container/70"
-                          }`} />
-                        </button>
+                          {/* Product image */}
+                          <div className="w-full aspect-[3/4] bg-surface-container-low dark:bg-zinc-800/30 mb-3 flex items-center justify-center p-2 rounded-xl overflow-hidden">
+                            <Image
+                              className="max-w-full max-h-full object-contain"
+                              alt={p.alt}
+                              src={p.image}
+                              width={120}
+                              height={160}
+                            />
+                          </div>
+                          {/* Name */}
+                          <p className="font-button text-[10px] uppercase tracking-wider text-on-surface dark:text-surface font-bold leading-tight mb-1 line-clamp-2">
+                            {p.name}
+                          </p>
+                          {/* Price */}
+                          <p className="font-sans text-xs font-black text-brand-button mb-3">
+                            {p.displayPrice}
+                          </p>
+                          {/* ADD button */}
+                          <button
+                            onClick={() => handleAddToCart(p.id, p.name, p.price, p.imageSrc, p.qty)}
+                            className="w-full border border-on-surface dark:border-surface text-on-surface dark:text-surface py-1.5 text-[9px] font-black tracking-wider uppercase rounded-md hover:bg-on-surface hover:text-surface dark:hover:bg-surface dark:hover:text-on-surface transition-colors cursor-pointer mt-auto"
+                          >
+                            ADD
+                          </button>
+                        </div>
                       ))}
                     </div>
 
-                    <p className="text-xs text-on-surface-variant dark:text-secondary-container font-semibold tracking-wider uppercase">
-                      {ritualCarouselIndex + 1} / {total}
-                    </p>
+                    {/* Explore All Products CTA */}
+                    <button className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-full border border-primary-container/60 text-primary-container font-button text-xs uppercase tracking-widest font-extrabold hover:bg-primary-container hover:text-on-primary-container transition-all duration-300 cursor-pointer group">
+                      <span className="material-symbols-outlined text-base transition-transform duration-300 group-hover:translate-x-0.5">
+                        grid_view
+                      </span>
+                      Explore All Products
+                      <span className="material-symbols-outlined text-base transition-transform duration-300 group-hover:translate-x-1">
+                        arrow_forward
+                      </span>
+                    </button>
                   </div>
                 </>
               );
