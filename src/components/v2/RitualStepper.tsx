@@ -9,7 +9,8 @@ import ritualStep2 from "../../../public/images/ritual_step2_apply.png";
 import ritualStep3 from "../../../public/images/ritual_step3_massage.png";
 import ritualStep4 from "../../../public/images/ritual_step4_absorb.png";
 
-const CARD_GAP = 12; // gap-3 = 12px between cards on mobile
+const CARD_GAP = 12;
+const DESKTOP_CARD_GAP = 24;
 
 export default function RitualStepper() {
   const [activeStep, setActiveStep] = useState(0);
@@ -53,25 +54,15 @@ export default function RitualStepper() {
     },
   ];
 
-  /** Returns pixel offset for mobile or percentage string for desktop */
   const animateToStep = (step: number) => {
-    if (!sliderRef.current) return;
-    const isMobile = window.innerWidth < 768;
-
-    if (isMobile && cardRef.current) {
-      const cardWidth = cardRef.current.offsetWidth;
-      gsap.to(sliderRef.current, {
-        x: -(step * (cardWidth + CARD_GAP)),
-        duration: 0.45,
-        ease: "power2.out",
-      });
-    } else {
-      gsap.to(sliderRef.current, {
-        x: `-${step * 100}%`,
-        duration: 0.45,
-        ease: "power2.out",
-      });
-    }
+    if (!sliderRef.current || !cardRef.current) return;
+    const gap = window.innerWidth < 768 ? CARD_GAP : DESKTOP_CARD_GAP;
+    const cardWidth = cardRef.current.offsetWidth;
+    gsap.to(sliderRef.current, {
+      x: -(step * (cardWidth + gap)),
+      duration: 0.45,
+      ease: "power2.out",
+    });
   };
 
   // Slide to active step whenever it changes
@@ -222,30 +213,26 @@ export default function RitualStepper() {
         </div>
 
         {/* ── Carousel ── */}
-        {/*
-          Mobile:  overflow-hidden clips the track; cards are 86% wide so the
-                   next card's left edge naturally peeks from the right.
-          Desktop: standard centered card with rounded corners.
-        */}
         <div
-          className="overflow-hidden pb-3 md:pb-0 md:px-section-padding-h"
+          className="overflow-hidden pb-3 md:pb-0"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          {/* Desktop wrapper — rounded outer card */}
-          <div className="md:max-w-4xl md:mx-auto md:rounded-3xl md:border md:border-secondary-container/10 md:bg-white md:dark:bg-zinc-950 md:shadow-md md:overflow-hidden relative">
+          <div className="relative">
             {/* Track */}
             <div
               ref={sliderRef}
-              className="flex gap-3 md:gap-0 pl-4 pr-2 md:pl-0 md:pr-0"
+              className="flex gap-3 md:gap-6 pl-4 pr-2 md:pl-[16%]"
               style={{ willChange: "transform" }}
             >
               {steps.map((step, idx) => (
                 <div
                   key={idx}
                   ref={idx === 0 ? cardRef : undefined}
-                  className="w-[86%] md:w-full shrink-0 overflow-hidden rounded-2xl md:rounded-none bg-white dark:bg-zinc-950 border border-secondary-container/10 md:border-0 shadow-sm md:shadow-none grid grid-cols-1 md:grid-cols-2 items-center"
+                  className={`w-[86%] md:w-[68%] shrink-0 overflow-hidden rounded-2xl bg-white dark:bg-zinc-950 border border-secondary-container/10 shadow-sm grid grid-cols-1 md:grid-cols-2 items-center transition-opacity duration-500 ${
+                    idx !== activeStep ? "md:opacity-40" : "md:opacity-100"
+                  }`}
                 >
                   {/* Image */}
                   <div className="relative aspect-4/3 md:aspect-square w-full overflow-hidden bg-[#faf6e9]">
@@ -254,28 +241,29 @@ export default function RitualStepper() {
                       alt={step.title}
                       fill
                       className="object-cover"
-                      sizes="(max-width: 768px) 86vw, 50vw"
+                      sizes="(max-width: 768px) 86vw, 41vw"
                     />
                     <div className="absolute inset-0 bg-black/5" />
                   </div>
 
                   {/* Text */}
-                  <div className="p-6 md:p-12 flex flex-col justify-center">
+                  <div className="p-6 md:p-8 flex flex-col justify-center">
                     <span className="text-brand-button font-serif text-sm font-semibold tracking-wide mb-1">
                       Step {idx + 1}
                     </span>
-                    <h3 className="font-serif text-xl md:text-3xl text-on-surface dark:text-surface font-bold tracking-tight mb-3">
+                    <h3 className="font-serif text-xl md:text-2xl text-on-surface dark:text-surface font-bold tracking-tight mb-3">
                       {step.title}
                     </h3>
                     <p className="font-sans text-sm text-on-surface-variant dark:text-secondary-container leading-relaxed">
                       {step.description}
                     </p>
+
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Swipe hint pill — mobile only, fades after 3 s */}
+            {/* Swipe hint — mobile only */}
             {showSwipeHint && (
               <div
                 ref={swipeHintRef}
@@ -284,10 +272,7 @@ export default function RitualStepper() {
                            bg-black/50 backdrop-blur-sm text-white text-[11px]
                            font-sans font-medium pointer-events-none select-none z-20"
               >
-                <span
-                  className="material-symbols-outlined"
-                  style={{ fontSize: "14px" }}
-                >
+                <span className="material-symbols-outlined" style={{ fontSize: "14px" }}>
                   swipe
                 </span>
                 Swipe to explore
@@ -296,41 +281,43 @@ export default function RitualStepper() {
           </div>
         </div>
 
-        {/* ── Dot indicators — mobile only ── */}
-        <div className="flex justify-center gap-2 mt-5 md:hidden">
-          {steps.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setActiveStep(idx)}
-              aria-label={`Go to step ${idx + 1}`}
-              className={`transition-all duration-300 rounded-full cursor-pointer ${
-                idx === activeStep
-                  ? "w-6 h-2 bg-brand-button"
-                  : "w-2 h-2 bg-secondary-container/30"
-              }`}
-            />
-          ))}
-        </div>
-
-        {/* ── Nav buttons — desktop only ── */}
-        <div className="hidden md:flex justify-center gap-4 mt-8">
+        {/* ── Bottom bar: ← dots → ── */}
+        <div className="flex items-center justify-center gap-3 mt-5">
+          {/* Left arrow — desktop only */}
           <button
             onClick={() => setActiveStep((prev) => Math.max(0, prev - 1))}
             disabled={activeStep === 0}
-            className="w-10 h-10 flex items-center justify-center rounded-full border border-secondary-container/20 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors text-on-surface cursor-pointer"
+            className="hidden md:flex w-10 h-10 items-center justify-center rounded-full border border-secondary-container/20 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors text-on-surface cursor-pointer"
           >
             <span className="material-symbols-outlined text-lg">chevron_left</span>
           </button>
+
+          {/* Dots */}
+          <div className="flex items-center gap-2">
+            {steps.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActiveStep(idx)}
+                aria-label={`Go to step ${idx + 1}`}
+                className={`transition-all duration-300 rounded-full cursor-pointer ${
+                  idx === activeStep
+                    ? "w-6 h-2 bg-brand-button"
+                    : "w-2 h-2 bg-secondary-container/30"
+                }`}
+              />
+            ))}
+          </div>
+
+          {/* Right arrow — desktop only */}
           <button
-            onClick={() =>
-              setActiveStep((prev) => Math.min(steps.length - 1, prev + 1))
-            }
+            onClick={() => setActiveStep((prev) => Math.min(steps.length - 1, prev + 1))}
             disabled={activeStep === steps.length - 1}
-            className="w-10 h-10 flex items-center justify-center rounded-full border border-secondary-container/20 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors text-on-surface cursor-pointer"
+            className="hidden md:flex w-10 h-10 items-center justify-center rounded-full border border-secondary-container/20 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors text-on-surface cursor-pointer"
           >
             <span className="material-symbols-outlined text-lg">chevron_right</span>
           </button>
         </div>
+
       </div>
     </section>
   );

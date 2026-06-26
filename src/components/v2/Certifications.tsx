@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Image from "next/image";
+import { gsap } from "gsap";
 
 // Import certification logo assets
 import gmpLogo from "../../../public/certifications/gmp.png";
@@ -10,12 +11,31 @@ import fdaLogo from "../../../public/certifications/fda.png";
 import fsmsLogo from "../../../public/certifications/fsms.png";
 
 export default function Certifications() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const targets = section.querySelectorAll(".cert-card");
+    gsap.set(targets, { opacity: 0, y: 40 });
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+        gsap.to(targets, { opacity: 1, y: 0, duration: 0.6, stagger: 0.12, ease: "power2.out" });
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section className="bg-white dark:bg-zinc-950 py-8 md:py-12 border-b border-secondary-container/10 transition-colors duration-300">
+    <section ref={sectionRef} className="bg-white dark:bg-zinc-950 py-8 md:py-12 border-b border-secondary-container/10 transition-colors duration-300">
       <div className="max-w-max-width mx-auto px-2 sm:px-4 md:px-section-padding-h">
         <div className="grid grid-cols-4 gap-1.5 sm:gap-3 md:gap-4 lg:gap-6">
           {/* Certificate 1: GMP */}
-          <div className="bg-[#faf6e9]/50 dark:bg-zinc-900/10 border border-secondary-container/25 rounded-xl md:rounded-2xl p-2 sm:p-4 md:p-6 flex flex-col items-center text-center group hover:border-brand-button/50 hover:scale-[1.02] transition-all duration-300 hover:shadow-xs">
+          <div className="cert-card bg-[#faf6e9]/50 dark:bg-zinc-900/10 border border-secondary-container/25 rounded-xl md:rounded-2xl p-2 sm:p-4 md:p-6 flex flex-col items-center text-center group hover:border-brand-button/50 hover:scale-[1.02] transition-all duration-300 hover:shadow-xs">
             <div className="mb-2 md:mb-4 select-none shrink-0">
               <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 relative flex items-center justify-center">
                 <Image
@@ -35,7 +55,7 @@ export default function Certifications() {
           </div>
 
           {/* Certificate 2: QMS */}
-          <div className="bg-[#faf6e9]/50 dark:bg-zinc-900/10 border border-secondary-container/25 rounded-xl md:rounded-2xl p-2 sm:p-4 md:p-6 flex flex-col items-center text-center group hover:border-brand-button/50 hover:scale-[1.02] transition-all duration-300 hover:shadow-xs">
+          <div className="cert-card bg-[#faf6e9]/50 dark:bg-zinc-900/10 border border-secondary-container/25 rounded-xl md:rounded-2xl p-2 sm:p-4 md:p-6 flex flex-col items-center text-center group hover:border-brand-button/50 hover:scale-[1.02] transition-all duration-300 hover:shadow-xs">
             <div className="mb-2 md:mb-4 select-none shrink-0">
               <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 relative flex items-center justify-center">
                 <Image
@@ -55,7 +75,7 @@ export default function Certifications() {
           </div>
 
           {/* Certificate 3: FDA */}
-          <div className="bg-[#faf6e9]/50 dark:bg-zinc-900/10 border border-secondary-container/25 rounded-xl md:rounded-2xl p-2 sm:p-4 md:p-6 flex flex-col items-center text-center group hover:border-brand-button/50 hover:scale-[1.02] transition-all duration-300 hover:shadow-xs">
+          <div className="cert-card bg-[#faf6e9]/50 dark:bg-zinc-900/10 border border-secondary-container/25 rounded-xl md:rounded-2xl p-2 sm:p-4 md:p-6 flex flex-col items-center text-center group hover:border-brand-button/50 hover:scale-[1.02] transition-all duration-300 hover:shadow-xs">
             <div className="mb-2 md:mb-4 select-none shrink-0">
               <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 relative flex items-center justify-center">
                 <Image
@@ -75,7 +95,7 @@ export default function Certifications() {
           </div>
 
           {/* Certificate 4: FSMS */}
-          <div className="bg-[#faf6e9]/50 dark:bg-zinc-900/10 border border-secondary-container/25 rounded-xl md:rounded-2xl p-2 sm:p-4 md:p-6 flex flex-col items-center text-center group hover:border-brand-button/50 hover:scale-[1.02] transition-all duration-300 hover:shadow-xs">
+          <div className="cert-card bg-[#faf6e9]/50 dark:bg-zinc-900/10 border border-secondary-container/25 rounded-xl md:rounded-2xl p-2 sm:p-4 md:p-6 flex flex-col items-center text-center group hover:border-brand-button/50 hover:scale-[1.02] transition-all duration-300 hover:shadow-xs">
             <div className="mb-2 md:mb-4 select-none shrink-0">
               <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 relative flex items-center justify-center">
                 <Image

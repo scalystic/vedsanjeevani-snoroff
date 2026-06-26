@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { gsap } from "gsap";
 import Image from "next/image";
 import snoreOffNabhiOil from "../../../public/snore-off-nabhi-oil.png";
 import productImage1 from "../../../public/images/product_image_1.jpg";
@@ -28,6 +29,16 @@ export default function Hero({
 }: HeroProps) {
   const productImages = [productImage3, productImage1, productImage2];
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const heroRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ delay: 0.3, defaults: { ease: "power2.out" } });
+      tl.from(".hero-left", { opacity: 0, x: -60, duration: 0.8 })
+        .from(".hero-right", { opacity: 0, x: 60, duration: 0.8 }, "-=0.6");
+    }, heroRef);
+    return () => ctx.revert();
+  }, []);
 
   const currentPrice = selectedFormat === "starter" ? 549 : 998;
   const originalPrice = selectedFormat === "starter" ? 699 : 1398;
@@ -42,11 +53,12 @@ export default function Hero({
 
   return (
     <section
+      ref={heroRef}
       id="shop"
       className="max-w-max-width mx-auto px-4 md:px-section-padding-h pt-12 md:pt-20 pb-4 md:pb-6 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start"
     >
       {/* Left Column: Image Gallery */}
-      <div className="lg:col-span-6 w-full flex flex-col gap-4">
+      <div className="hero-left lg:col-span-6 w-full flex flex-col gap-4">
         {/* Breadcrumbs */}
         <nav className="flex gap-2 text-on-surface-variant/70 dark:text-secondary-container/70 font-sans text-[11px] tracking-widest mb-2 uppercase">
           <a
@@ -117,7 +129,7 @@ export default function Hero({
       </div>
 
       {/* Right Column: Product Information */}
-      <div className="lg:col-span-6 flex flex-col pt-2 lg:pt-6">
+      <div className="hero-right lg:col-span-6 flex flex-col pt-2 lg:pt-6">
         {/* Rating */}
         <div className="flex items-center gap-2 mb-3">
           <div className="flex text-brand-button">

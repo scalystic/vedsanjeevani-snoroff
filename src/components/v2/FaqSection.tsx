@@ -34,10 +34,31 @@ const faqItems: FaqItem[] = [
 export default function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const contentRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const sectionRef = useRef<HTMLElement>(null);
 
   const toggleAccordion = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const heading = section.querySelector(".faq-heading");
+    const items = section.querySelectorAll(".faq-item");
+    gsap.set(heading, { opacity: 0, y: 35 });
+    gsap.set(items, { opacity: 0, y: 30 });
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+        gsap.to(heading, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" });
+        gsap.to(items, { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: "power2.out", delay: 0.15 });
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     contentRefs.current.forEach((el, idx) => {
@@ -62,10 +83,10 @@ export default function FaqSection() {
   }, [openIndex]);
 
   return (
-    <section id="faq" className="w-full bg-[#faf6e9]/20 dark:bg-zinc-950/20 border-b border-secondary-container/10 transition-colors duration-300 py-16 md:py-24">
+    <section ref={sectionRef} id="faq" className="w-full bg-[#faf6e9]/20 dark:bg-zinc-950/20 border-b border-secondary-container/10 transition-colors duration-300 py-16 md:py-24">
       <div className="max-w-[800px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center mb-12">
+        <div className="faq-heading text-center mb-12">
           <h2 className="font-serif text-3xl md:text-4xl text-brand-heading font-bold tracking-tight mb-4 uppercase">
             Frequently Asked Questions
           </h2>
@@ -79,7 +100,7 @@ export default function FaqSection() {
             return (
               <div
                 key={idx}
-                className="bg-white dark:bg-zinc-900/40 border border-secondary-container/20 dark:border-zinc-800/80 rounded-xl overflow-hidden transition-all duration-300 hover:border-brand-button/50 hover:shadow-xs"
+                className="faq-item bg-white dark:bg-zinc-900/40 border border-secondary-container/20 dark:border-zinc-800/80 rounded-xl overflow-hidden transition-all duration-300 hover:border-brand-button/50 hover:shadow-xs"
               >
                 <button
                   onClick={() => toggleAccordion(idx)}

@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Image from "next/image";
+import { gsap } from "gsap";
 import headerLogo from "../../../public/header-llogo.avif";
 
 interface HeaderProps {
@@ -17,10 +18,38 @@ export default function Header({
   onSearchToggle,
   onMobileMenuToggle,
 }: HeaderProps) {
+  const headerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+
+    const banner = header.querySelector(".header-banner");
+    const logo = header.querySelector(".header-logo");
+    const navLinks = header.querySelectorAll(".nav-link");
+    const icons = header.querySelectorAll(".header-icon");
+
+    gsap.set(banner, { y: -50, opacity: 0 });
+    gsap.set(logo, { opacity: 0, scale: 0.9 });
+    gsap.set(navLinks, { opacity: 0, y: -8 });
+    gsap.set(icons, { opacity: 0, x: 14 });
+
+    const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+    tl.to(banner, { y: 0, opacity: 1, duration: 0.5 })
+      .to(logo, { opacity: 1, scale: 1, duration: 0.4 }, "-=0.2")
+      .to(navLinks, { opacity: 1, y: 0, duration: 0.3, stagger: 0.07 }, "-=0.25")
+      .to(icons, { opacity: 1, x: 0, duration: 0.3, stagger: 0.07 }, "-=0.35");
+
+    return () => {
+      tl.kill();
+      gsap.set([banner, logo, ...Array.from(navLinks), ...Array.from(icons)], { clearProps: "all" });
+    };
+  }, []);
+
   return (
-    <header className="bg-surface/90 dark:bg-zinc-950/90 backdrop-blur-md text-on-surface dark:text-surface fixed top-0 left-0 right-0 border-b border-secondary-container/10 z-40 transition-colors duration-300">
+    <header ref={headerRef} className="bg-surface/90 dark:bg-zinc-950/90 backdrop-blur-md text-on-surface dark:text-surface fixed top-0 left-0 right-0 border-b border-secondary-container/10 z-40 transition-colors duration-300">
       {/* Top Banner */}
-      <div className="bg-brand-button text-white text-center py-2 font-button text-[11px] font-bold uppercase tracking-widest">
+      <div className="header-banner bg-brand-button text-white text-center py-2 font-button text-[11px] font-bold uppercase tracking-widest">
         Stay ahead of your day.
       </div>
 

@@ -18,6 +18,7 @@ export default function SymptomGrid() {
   const sliderRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const swipeHintRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
   const touchStartX = useRef<number | null>(null);
   const touchStartY = useRef<number | null>(null);
   const isDragging = useRef(false);
@@ -52,6 +53,27 @@ export default function SymptomGrid() {
       alt: "Tiredness and fatigue during the day",
     },
   ];
+
+  // Scroll entrance animation
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const header = section.querySelector(".symptom-header");
+    const cards = section.querySelectorAll(".symptom-desktop-card");
+    gsap.set(header, { opacity: 0, y: 35 });
+    gsap.set(cards, { opacity: 0, y: 45, scale: 0.96 });
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+        gsap.to(header, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" });
+        gsap.to(cards, { opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.12, ease: "power2.out", delay: 0.15 });
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
 
   /* ── Animate to card ── */
   const animateToCard = (idx: number) => {
@@ -151,10 +173,10 @@ export default function SymptomGrid() {
   };
 
   return (
-    <section className="bg-white dark:bg-zinc-950 py-12 md:py-24 transition-colors duration-300">
+    <section ref={sectionRef} className="bg-white dark:bg-zinc-950 py-12 md:py-24 transition-colors duration-300">
       <div className="max-w-max-width mx-auto">
         {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-10 md:mb-16 px-4 md:px-section-padding-h">
+        <div className="symptom-header text-center max-w-2xl mx-auto mb-10 md:mb-16 px-4 md:px-section-padding-h">
           <div className="flex items-center justify-center gap-1 text-brand-button mb-2">
             <span className="material-symbols-outlined text-lg">
               sentiment_dissatisfied
@@ -259,7 +281,7 @@ export default function SymptomGrid() {
           {symptoms.map((symptom, index) => (
             <div
               key={index}
-              className="group relative aspect-square overflow-hidden rounded-3xl border border-secondary-container/10 bg-[#faf6e9] dark:bg-zinc-900/10 shadow-md transition-all duration-300 hover:shadow-lg"
+              className="symptom-desktop-card group relative aspect-square overflow-hidden rounded-3xl border border-secondary-container/10 bg-[#faf6e9] dark:bg-zinc-900/10 shadow-md transition-all duration-300 hover:shadow-lg"
             >
               <Image
                 src={symptom.image}

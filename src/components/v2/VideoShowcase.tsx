@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect, useCallback } from "react";
+import { gsap } from "gsap";
 
 interface VideoShowcaseProps {
   onOpenVideoModal: (url: string) => void;
@@ -12,6 +13,7 @@ export default function VideoShowcase({
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
   const [playingIndex, setPlayingIndex] = useState<number | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   // Only render <video> after client mount to avoid browser-extension hydration mismatch
@@ -44,6 +46,27 @@ export default function VideoShowcase({
   // Set mounted after first client render
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  // Scroll entrance animation
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const header = section.querySelector(".showcase-header");
+    const cards = section.querySelectorAll(".showcase-card");
+    gsap.set(header, { opacity: 0, y: 35 });
+    gsap.set(cards, { opacity: 0, y: 50, scale: 0.95 });
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+        gsap.to(header, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" });
+        gsap.to(cards, { opacity: 1, y: 0, scale: 1, duration: 0.65, stagger: 0.12, ease: "power2.out", delay: 0.15 });
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
   }, []);
 
   // Track which card is in view via IntersectionObserver
@@ -120,10 +143,10 @@ export default function VideoShowcase({
   };
 
   return (
-    <section className="bg-white dark:bg-zinc-950 py-16 md:py-24 transition-colors duration-300 overflow-hidden">
+    <section ref={sectionRef} className="bg-white dark:bg-zinc-950 py-16 md:py-24 transition-colors duration-300 overflow-hidden">
       <div className="max-w-max-width mx-auto px-4 md:px-section-padding-h">
         {/* Header */}
-        <div className="text-center mb-10 md:mb-16">
+        <div className="showcase-header text-center mb-10 md:mb-16">
           <div className="flex items-center justify-center gap-1.5 text-brand-button mb-3">
             <span className="material-symbols-outlined text-lg">
               person_play
@@ -145,7 +168,7 @@ export default function VideoShowcase({
         {/* Mobile: horizontal scroll snap | Desktop: 3-col grid */}
         <div
           ref={scrollContainerRef}
-          className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-4 md:grid md:grid-cols-3 md:gap-8 md:overflow-visible md:pb-0 scrollbar-hide"
+          className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-4 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:pb-0 md:max-w-2xl md:mx-auto scrollbar-hide"
           style={{ WebkitOverflowScrolling: "touch" }}
         >
           {videoData.map((item, idx) => (
@@ -154,7 +177,7 @@ export default function VideoShowcase({
               ref={(el) => {
                 cardRefs.current[idx] = el;
               }}
-              className="snap-center shrink-0 w-[78vw] max-w-[300px] md:w-auto md:max-w-none md:shrink group relative aspect-[9/16] overflow-hidden rounded-3xl border border-secondary-container/10 bg-[#faf6e9] dark:bg-zinc-900/10 cursor-pointer shadow-md hover:shadow-xl transition-all duration-500"
+              className="showcase-card snap-center shrink-0 w-[65vw] max-w-[230px] md:w-auto md:max-w-none md:shrink group relative aspect-[9/16] overflow-hidden rounded-3xl border border-secondary-container/10 bg-[#faf6e9] dark:bg-zinc-900/10 cursor-pointer shadow-md hover:shadow-xl transition-all duration-500"
               onMouseEnter={() => handlePlayHover(idx)}
               onMouseLeave={() => handlePlayLeave(idx)}
               onClick={() => {
@@ -186,17 +209,17 @@ export default function VideoShowcase({
               <div className="absolute inset-4 border border-brand-button/20 group-hover:border-brand-button/50 transition-colors duration-500 rounded-2xl pointer-events-none z-10" />
 
               {/* Content overlay */}
-              <div className="absolute inset-0 p-5 md:p-6 flex flex-col justify-between z-10 text-white">
+              <div className="absolute inset-0 p-4 md:p-3 flex flex-col justify-between z-10 text-white">
                 {/* Top: Play Button only (no Founder badge) */}
                 <div className="flex justify-end">
                   <div
-                    className={`w-10 h-10 backdrop-blur-md rounded-full border flex items-center justify-center transition-all duration-300 ${
+                    className={`w-10 h-10 md:w-7 md:h-7 backdrop-blur-md rounded-full border flex items-center justify-center transition-all duration-300 ${
                       playingIndex === idx
                         ? "bg-brand-button border-brand-button text-black"
                         : "bg-white/10 border-white/20 group-hover:bg-brand-button group-hover:text-black group-hover:border-brand-button"
                     }`}
                   >
-                    <span className="material-symbols-outlined text-xl ml-0.5">
+                    <span className="material-symbols-outlined text-xl md:text-base ml-0.5">
                       {playingIndex === idx ? "pause" : "play_arrow"}
                     </span>
                   </div>
@@ -204,7 +227,7 @@ export default function VideoShowcase({
 
                 {/* Bottom: Quote only */}
                 <div>
-                  <p className="font-sans text-sm font-semibold leading-relaxed text-zinc-100 group-hover:text-white transition-colors">
+                  <p className="font-sans text-sm md:text-[10px] md:leading-snug font-semibold leading-relaxed text-zinc-100 group-hover:text-white transition-colors">
                     &ldquo;{item.quote}&rdquo;
                   </p>
                   <span className="md:hidden font-sans text-[9px] text-zinc-400 italic mt-2 block">

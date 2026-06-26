@@ -1,31 +1,107 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
+import { gsap } from "gsap";
 
 interface VideoReviewsProps {
   onOpenVideoModal: (url: string) => void;
-  onAddToCart: (id: string, name: string, price: number, image: string, size: string) => void;
+  onAddToCart: (
+    id: string,
+    name: string,
+    price: number,
+    image: string,
+    size: string,
+  ) => void;
 }
 
 const customerVideos = [
-  { name: "Suresh P.",  location: "Mumbai",    videoUrl: "/ugc/ugc_1.mp4", productName: "Snore Off Nabhi Oil (30ml)" },
-  { name: "Karan M.",   location: "Pune",       videoUrl: "/ugc/ugc_2.mp4", productName: "Snore Off Nabhi Oil (30ml)" },
-  { name: "Rajesh K.",  location: "Ahmedabad",  videoUrl: "/ugc/ugc_3.mp4", productName: "Snore Off Nabhi Oil (30ml)" },
-  { name: "Mohit S.",   location: "Delhi",      videoUrl: "/ugc/ugc_4.mp4", productName: "Snore Off Nabhi Oil (30ml)" },
-  { name: "Vikram L.",  location: "Bangalore",  videoUrl: "/ugc/ugc_5.mp4", productName: "Snore Off Nabhi Oil (30ml)" },
-  { name: "Arun R.",    location: "Chennai",    videoUrl: "/ugc/ugc_6.mp4", productName: "Snore Off Nabhi Oil (30ml)" },
+  {
+    name: "Suresh P.",
+    location: "Mumbai",
+    videoUrl: "/ugc/ugc_1.mp4",
+    productName: "Snore Off Nabhi Oil",
+  },
+  {
+    name: "Karan M.",
+    location: "Pune",
+    videoUrl: "/ugc/ugc_2.mp4",
+    productName: "Snore Off Nabhi Oil",
+  },
+  {
+    name: "Rajesh K.",
+    location: "Ahmedabad",
+    videoUrl: "/ugc/ugc_3.mp4",
+    productName: "Snore Off Nabhi Oil",
+  },
+  {
+    name: "Mohit S.",
+    location: "Delhi",
+    videoUrl: "/ugc/ugc_4.mp4",
+    productName: "Snore Off Nabhi Oil",
+  },
+  {
+    name: "Vikram L.",
+    location: "Bangalore",
+    videoUrl: "/ugc/ugc_5.mp4",
+    productName: "Snore Off Nabhi Oil",
+  },
+  {
+    name: "Arun R.",
+    location: "Chennai",
+    videoUrl: "/ugc/ugc_6.mp4",
+    productName: "Snore Off Nabhi Oil",
+  },
 ];
 
-export default function VideoReviews({ onOpenVideoModal, onAddToCart }: VideoReviewsProps) {
-  return (
-    <section className="bg-white dark:bg-zinc-950 py-14 md:py-24 transition-colors duration-300 overflow-hidden">
-      <div className="max-w-max-width mx-auto px-4 md:px-section-padding-h">
+export default function VideoReviews({}: VideoReviewsProps) {
+  const sectionRef = useRef<HTMLElement>(null);
 
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const header = section.querySelector(".ugc-header");
+    const cards = section.querySelectorAll(".ugc-card");
+    gsap.set(header, { opacity: 0, y: 35 });
+    gsap.set(cards, { opacity: 0, y: 45, scale: 0.95 });
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+        gsap.to(header, {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          ease: "power2.out",
+        });
+        gsap.to(cards, {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.6,
+          stagger: 0.08,
+          ease: "power2.out",
+          delay: 0.15,
+        });
+      },
+      { threshold: 0.05 },
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <section
+      ref={sectionRef}
+      className="bg-white dark:bg-zinc-950 py-14 md:py-24 transition-colors duration-300 overflow-hidden"
+    >
+      <div className="max-w-max-width mx-auto px-4 md:px-section-padding-h">
         {/* Header */}
-        <div className="text-center mb-10 md:mb-16">
+        <div className="ugc-header text-center mb-10 md:mb-16">
           <div className="flex items-center justify-center gap-1 text-brand-button mb-2">
             <span className="material-symbols-outlined text-lg">groups</span>
-            <span className="font-sans text-[11px] uppercase tracking-widest font-extrabold">Real Customers</span>
+            <span className="font-sans text-[11px] uppercase tracking-widest font-extrabold">
+              Real Customers
+            </span>
           </div>
           <h2 className="font-serif text-3xl md:text-4xl text-brand-heading font-bold tracking-tight">
             HEAR IT FROM THE PEOPLE USING IT.
@@ -49,7 +125,6 @@ export default function VideoReviews({ onOpenVideoModal, onAddToCart }: VideoRev
             <VideoCard key={idx} item={item} />
           ))}
         </div>
-
       </div>
     </section>
   );
@@ -78,7 +153,10 @@ function VideoCard({ item, mobile }: VideoCardProps) {
     const video = videoRef.current;
     if (!video) return;
     if (video.paused) {
-      video.play().then(() => setPlaying(true)).catch(() => {});
+      video
+        .play()
+        .then(() => setPlaying(true))
+        .catch(() => {});
     } else {
       video.pause();
       setPlaying(false);
@@ -89,7 +167,10 @@ function VideoCard({ item, mobile }: VideoCardProps) {
     if (mobile) return;
     const video = videoRef.current;
     if (video && video.paused) {
-      video.play().then(() => setPlaying(true)).catch(() => {});
+      video
+        .play()
+        .then(() => setPlaying(true))
+        .catch(() => {});
     }
   };
 
@@ -116,17 +197,25 @@ function VideoCard({ item, mobile }: VideoCardProps) {
       url: window.location.href,
     };
     if (navigator.share) {
-      try { await navigator.share(shareData); } catch { /* user cancelled */ }
+      try {
+        await navigator.share(shareData);
+      } catch {
+        /* user cancelled */
+      }
     } else {
       try {
         await navigator.clipboard.writeText(window.location.href);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
-      } catch { /* clipboard denied */ }
+      } catch {
+        /* clipboard denied */
+      }
     }
   };
 
-  const wrapClass = mobile ? "shrink-0 snap-start w-[200px]" : "w-full";
+  const wrapClass = mobile
+    ? "ugc-card shrink-0 snap-start w-[200px]"
+    : "ugc-card w-full";
 
   return (
     <div className={wrapClass}>
@@ -162,7 +251,10 @@ function VideoCard({ item, mobile }: VideoCardProps) {
             className="w-8 h-8 bg-black/50 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center text-white hover:bg-brand-button hover:text-black hover:border-brand-button transition-all duration-200"
             title={copied ? "Link copied!" : "Share this video"}
           >
-            <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>
+            <span
+              className="material-symbols-outlined"
+              style={{ fontSize: "16px" }}
+            >
               {copied ? "check" : "share"}
             </span>
           </button>
@@ -187,7 +279,9 @@ function VideoCard({ item, mobile }: VideoCardProps) {
           <p className="font-sans text-[10px] font-black text-white uppercase tracking-wide leading-tight truncate">
             {item.name}
           </p>
-          <p className="font-sans text-[9px] text-white/60 leading-tight">{item.location}</p>
+          <p className="font-sans text-[9px] text-white/60 leading-tight">
+            {item.location}
+          </p>
         </div>
       </div>
     </div>

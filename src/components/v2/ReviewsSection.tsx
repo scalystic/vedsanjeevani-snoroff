@@ -1,6 +1,37 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useRef } from "react";
+import { gsap } from "gsap";
 
 export default function ReviewsSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const header = section.querySelector(".reviews-header");
+    const chart = section.querySelector(".reviews-chart");
+    const bars = section.querySelectorAll(".rating-bar-fill");
+    const cards = section.querySelectorAll(".review-card");
+    gsap.set([header, chart, cards], { opacity: 0, y: 35 });
+    gsap.set(bars, { scaleX: 0, transformOrigin: "left center" });
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+        gsap.to(header, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" });
+        gsap.to(chart, {
+          opacity: 1, y: 0, duration: 0.7, ease: "power2.out", delay: 0.15,
+          onComplete: () => gsap.to(bars, { scaleX: 1, duration: 0.9, stagger: 0.1, ease: "power2.out" }),
+        });
+        gsap.to(cards, { opacity: 1, y: 0, duration: 0.6, stagger: 0.15, ease: "power2.out", delay: 0.5 });
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
   const ratingStats = [
     { stars: 5, count: 90, percentage: 90 },
     { stars: 4, count: 6, percentage: 6 },
@@ -41,12 +72,13 @@ export default function ReviewsSection() {
 
   return (
     <section
+      ref={sectionRef}
       id="reviews"
       className="bg-[#faf6e9]/20 dark:bg-zinc-900/10 border-t border-secondary-container/10 py-16 md:py-24 transition-colors duration-300"
     >
       <div className="max-w-xl mx-auto px-4 md:px-0">
         {/* Header */}
-        <div className="text-center mb-10">
+        <div className="reviews-header text-center mb-10">
           <div className="flex items-center justify-center gap-1 text-brand-button mb-2">
             <span className="material-symbols-outlined text-lg">
               rate_review
@@ -61,7 +93,7 @@ export default function ReviewsSection() {
         </div>
 
         {/* Rating Chart & Overview */}
-        <div className="bg-white dark:bg-zinc-950 border border-secondary-container/15 rounded-3xl p-6 mb-8 shadow-xs flex flex-col items-center">
+        <div className="reviews-chart bg-white dark:bg-zinc-950 border border-secondary-container/15 rounded-3xl p-6 mb-8 shadow-xs flex flex-col items-center">
           {/* Star Breakdown Bars */}
           <div className="w-full flex flex-col gap-2 mb-6">
             {ratingStats.map((stat) => (
@@ -84,7 +116,7 @@ export default function ReviewsSection() {
                 {/* Progress Bar */}
                 <div className="flex-1 h-3 bg-zinc-100 dark:bg-zinc-900 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-brand-button rounded-full"
+                    className="rating-bar-fill h-full bg-brand-button rounded-full"
                     style={{ width: `${stat.percentage}%` }}
                   ></div>
                 </div>
@@ -144,7 +176,7 @@ export default function ReviewsSection() {
           {reviewList.map((rev, idx) => (
             <div
               key={idx}
-              className="bg-white dark:bg-zinc-950 border border-secondary-container/10 p-5 rounded-2xl shadow-xs"
+              className="review-card bg-white dark:bg-zinc-950 border border-secondary-container/10 p-5 rounded-2xl shadow-xs"
             >
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">

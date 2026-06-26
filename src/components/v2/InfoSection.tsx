@@ -6,6 +6,7 @@ import { gsap } from "gsap";
 export default function InfoSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const contentRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const sectionRef = useRef<HTMLElement>(null);
 
   const toggleAccordion = (index: number) => {
     if (openIndex === index) {
@@ -14,6 +15,23 @@ export default function InfoSection() {
       setOpenIndex(index);
     }
   };
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const rows = section.querySelectorAll(".info-row");
+    gsap.set(rows, { opacity: 0, y: 20 });
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+        gsap.to(rows, { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, ease: "power2.out" });
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     contentRefs.current.forEach((el, idx) => {
@@ -92,33 +110,63 @@ export default function InfoSection() {
     },
   ];
 
+  const highlights = [
+    { stat: "7–10", label: "Nights to first results" },
+    { stat: "72,000", label: "Nerve channels activated" },
+    { stat: "100%", label: "Natural Ayurvedic formula" },
+  ];
+
   return (
-    <section id="science" className="w-full max-w-max-width mx-auto px-4 md:px-section-padding-h pt-4 md:pt-6 pb-12 md:pb-16 transition-colors duration-300">
-      {/* Accordions */}
-      <div className="flex flex-col border-t border-secondary-container/20">
-        {accordionItems.map((item, idx) => (
-          <div key={idx} className="border-b border-secondary-container/20">
-            <button
-              onClick={() => toggleAccordion(idx)}
-              className="w-full flex justify-between items-center py-5 text-left font-sans text-sm md:text-base font-extrabold uppercase text-on-surface dark:text-surface tracking-wider cursor-pointer hover:text-brand-button transition-colors"
-            >
-              <span>{item.title}</span>
-              <span className={`material-symbols-outlined transition-transform duration-300 ${openIndex === idx ? "rotate-45 text-brand-button" : "rotate-0 text-on-surface-variant/40"}`}>
-                add
-              </span>
-            </button>
-            <div
-              ref={(el) => {
-                contentRefs.current[idx] = el;
-              }}
-              className="overflow-hidden h-0 opacity-0"
-            >
-              <div className="pb-6 pr-4">
-                {item.content}
-              </div>
+    <section ref={sectionRef} id="science" className="w-full max-w-max-width mx-auto px-4 md:px-section-padding-h pt-4 md:pt-6 pb-12 md:pb-16 transition-colors duration-300">
+      <div className="lg:grid lg:grid-cols-[2fr_3fr] lg:gap-16 xl:gap-24">
+
+        {/* Left sticky panel — lg+ only */}
+        <div className="info-row hidden lg:block">
+          <div className="sticky top-24 space-y-8">
+            <div>
+              <p className="text-xs uppercase tracking-widest text-brand-button font-semibold mb-3">Product Details</p>
+              <h2 className="text-3xl xl:text-4xl font-extrabold text-on-surface dark:text-surface leading-tight">
+                Everything you need to know
+              </h2>
+            </div>
+            <div className="space-y-3">
+              {highlights.map(({ stat, label }) => (
+                <div key={stat} className="flex items-center gap-4 p-4 rounded-2xl bg-secondary-container/10 border border-secondary-container/20">
+                  <span className="text-2xl font-extrabold text-brand-button w-20 shrink-0 tabular-nums">{stat}</span>
+                  <span className="text-sm text-on-surface-variant dark:text-secondary-container leading-snug">{label}</span>
+                </div>
+              ))}
             </div>
           </div>
-        ))}
+        </div>
+
+        {/* Accordions */}
+        <div className="flex flex-col border-t border-secondary-container/20">
+          {accordionItems.map((item, idx) => (
+            <div key={idx} className="info-row border-b border-secondary-container/20">
+              <button
+                onClick={() => toggleAccordion(idx)}
+                className="w-full flex justify-between items-center py-5 text-left font-sans text-sm md:text-base font-extrabold uppercase text-on-surface dark:text-surface tracking-wider cursor-pointer hover:text-brand-button transition-colors"
+              >
+                <span>{item.title}</span>
+                <span className={`material-symbols-outlined transition-transform duration-300 ${openIndex === idx ? "rotate-45 text-brand-button" : "rotate-0 text-on-surface-variant/40"}`}>
+                  add
+                </span>
+              </button>
+              <div
+                ref={(el) => {
+                  contentRefs.current[idx] = el;
+                }}
+                className="overflow-hidden h-0 opacity-0"
+              >
+                <div className="pb-6 pr-4">
+                  {item.content}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
       </div>
     </section>
   );

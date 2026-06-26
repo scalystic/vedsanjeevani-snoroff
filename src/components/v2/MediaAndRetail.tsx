@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Image from "next/image";
+import { gsap } from "gsap";
 
 import forbesLogo from "../../../public/logos/forbes_india.svg";
 import amazonLogo from "../../../public/logos/amazon.svg";
@@ -166,11 +167,30 @@ const LogoRow = ({ logos }: { logos: typeof mediaLogos }) => (
 );
 
 export default function MediaAndRetail() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const targets = section.querySelectorAll(".media-block");
+    gsap.set(targets, { opacity: 0, y: 40 });
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+        gsap.to(targets, { opacity: 1, y: 0, duration: 0.7, stagger: 0.2, ease: "power2.out" });
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section className="border-t border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-950 py-16 transition-colors duration-300">
+    <section ref={sectionRef} className="border-t border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-950 py-16 transition-colors duration-300">
       <div className="max-w-max-width mx-auto px-6 flex flex-col gap-14">
         {/* In Media */}
-        <div className="flex flex-col items-center">
+        <div className="media-block flex flex-col items-center">
           <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 dark:text-zinc-500 font-bold mb-3">
             AS SEEN IN
           </p>
@@ -184,7 +204,7 @@ export default function MediaAndRetail() {
         <div className="w-full h-px bg-zinc-100 dark:bg-zinc-800" />
 
         {/* Also Available On */}
-        <div className="flex flex-col items-center">
+        <div className="media-block flex flex-col items-center">
           <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 dark:text-zinc-500 font-bold mb-3">
             SHOP EVERYWHERE
           </p>

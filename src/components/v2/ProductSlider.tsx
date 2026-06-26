@@ -1,8 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Image from "next/image";
-import snoreOffNabhiOil from "../../../public/snore-off-nabhi-oil.png";
+import { gsap } from "gsap";
+import stressOil from "../../../public/product/stressoil.png";
+import digestionOil from "../../../public/product/digestionoil.png";
 
 interface ProductSliderProps {
   onAddToCart: (
@@ -15,6 +17,29 @@ interface ProductSliderProps {
 }
 
 export default function ProductSlider({ onAddToCart }: ProductSliderProps) {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const header = section.querySelector(".slider-header");
+    const cards = section.querySelectorAll(".product-card");
+    const cta = section.querySelector(".slider-cta");
+    gsap.set([header, cards, cta], { opacity: 0, y: 35 });
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+        gsap.to(header, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" });
+        gsap.to(cards, { opacity: 1, y: 0, duration: 0.6, stagger: 0.15, ease: "power2.out", delay: 0.15 });
+        gsap.to(cta, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", delay: 0.4 });
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
   const suggestedProducts = [
     {
       id: "sleep-stress-nabhi-15ml",
@@ -23,8 +48,8 @@ export default function ProductSlider({ onAddToCart }: ProductSliderProps) {
       originalPrice: 699,
       rating: 4.8,
       tags: ["Deep Sleep", "Stress Relief", "Calming"],
-      image: snoreOffNabhiOil,
-      imageSrc: "/snore-off-nabhi-oil.png",
+      image: stressOil,
+      imageSrc: "/product/stressoil.png",
       size: "15ml Bottle",
     },
     {
@@ -34,17 +59,17 @@ export default function ProductSlider({ onAddToCart }: ProductSliderProps) {
       originalPrice: 649,
       rating: 4.7,
       tags: ["Digestion", "Gut Health", "Detox"],
-      image: snoreOffNabhiOil,
-      imageSrc: "/snore-off-nabhi-oil.png",
+      image: digestionOil,
+      imageSrc: "/product/digestionoil.png",
       size: "30ml Bottle",
     },
   ];
 
   return (
-    <section className="bg-white dark:bg-zinc-950 py-16 md:py-14 transition-colors duration-300">
+    <section ref={sectionRef} className="bg-white dark:bg-zinc-950 py-16 md:py-14 transition-colors duration-300">
       <div className="max-w-max-width mx-auto px-4 md:px-section-padding-h">
         {/* Header */}
-        <div className="text-center mb-16 md:mb-8">
+        <div className="slider-header text-center mb-16 md:mb-8">
           <div className="flex items-center justify-center gap-1 text-brand-button mb-2">
             <span className="material-symbols-outlined text-lg">
               shopping_basket
@@ -64,7 +89,7 @@ export default function ProductSlider({ onAddToCart }: ProductSliderProps) {
           {suggestedProducts.map((p) => (
             <div
               key={p.id}
-              className="bg-zinc-50 dark:bg-zinc-900/10 border border-secondary-container/10 p-2 md:p-4 rounded-2xl flex flex-col justify-between group hover:border-brand-button/30 hover:shadow-lg transition-all duration-300 relative"
+              className="product-card bg-zinc-50 dark:bg-zinc-900/10 border border-secondary-container/10 p-2 md:p-4 rounded-2xl flex flex-col justify-between group hover:border-brand-button/30 hover:shadow-lg transition-all duration-300 relative"
             >
               {/* Rating Badge top-right */}
               <div className="absolute top-2 right-2 md:top-3 md:right-3 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xs border border-secondary-container/15 px-1.5 py-0.5 md:px-2 md:py-0.5 rounded-full text-[8px] md:text-[10px] font-black text-on-surface dark:text-surface flex items-center gap-0.5 select-none z-10">
@@ -79,7 +104,7 @@ export default function ProductSlider({ onAddToCart }: ProductSliderProps) {
                 <Image
                   src={p.image}
                   alt={p.name}
-                  className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
 
@@ -128,7 +153,7 @@ export default function ProductSlider({ onAddToCart }: ProductSliderProps) {
         </div>
 
         {/* Explore All Products CTA */}
-        <div className="flex justify-center mt-10">
+        <div className="slider-cta flex justify-center mt-10">
           <button className="border border-brand-button text-brand-button hover:bg-brand-button hover:text-white font-extrabold py-3 px-10 rounded-full transition-all duration-300 font-button tracking-wider text-xs cursor-pointer">
             EXPLORE ALL PRODUCTS
           </button>

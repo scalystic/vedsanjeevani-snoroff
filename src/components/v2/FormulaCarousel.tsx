@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import { gsap } from "gsap";
 
 import castorOilImg from "../../../public/castor_oil.png";
 import blackPepperImg from "../../../public/black_pepper.png";
@@ -48,12 +49,37 @@ export default function FormulaCarousel() {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const sectionRef = useRef<HTMLElement>(null);
   const isDragging = useRef(false);
   const startX = useRef(0);
   const scrollLeft = useRef(0);
   // Prevents handleScroll from fighting a programmatic scrollTo
   const isProgrammatic = useRef(false);
   const scrollDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Scroll entrance animation
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const header = section.querySelector(".formula-header");
+    const img = section.querySelector(".formula-ingredients-img");
+    const cards = section.querySelectorAll(".formula-desktop-card");
+    gsap.set(header, { opacity: 0, y: 35 });
+    gsap.set(img, { opacity: 0, scale: 0.88 });
+    gsap.set(cards, { opacity: 0, y: 40 });
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+        gsap.to(header, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" });
+        gsap.to(img, { opacity: 1, scale: 1, duration: 0.8, ease: "power2.out", delay: 0.1 });
+        gsap.to(cards, { opacity: 1, y: 0, duration: 0.6, stagger: 0.12, ease: "power2.out", delay: 0.2 });
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
 
   const scrollToIndex = (idx: number) => {
     const container = scrollRef.current;
@@ -121,11 +147,11 @@ export default function FormulaCarousel() {
     setActiveIndex((p) => (p === ingredients.length - 1 ? 0 : p + 1));
 
   return (
-    <section className="bg-[#faf6e9]/40 dark:bg-zinc-900/10 border-y border-secondary-container/10 py-16 md:py-24 transition-colors duration-300 overflow-hidden">
+    <section ref={sectionRef} className="bg-[#faf6e9]/40 dark:bg-zinc-900/10 border-y border-secondary-container/10 py-16 md:py-24 transition-colors duration-300 overflow-hidden">
       <div className="max-w-max-width mx-auto px-4">
 
         {/* Header */}
-        <div className="text-center mb-10 md:mb-14">
+        <div className="formula-header text-center mb-10 md:mb-14">
           <div className="flex items-center justify-center gap-1 text-brand-button mb-2">
             <span className="material-symbols-outlined text-lg">science</span>
             <span className="font-sans text-[11px] uppercase tracking-widest font-extrabold">
@@ -139,14 +165,14 @@ export default function FormulaCarousel() {
         </div>
 
         {/* Main Ingredients Image — no border, no shadow, pure flat */}
-        <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto mb-10 md:mb-14">
+        <div className="formula-ingredients-img relative w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto mb-10 md:mb-14">
           <Image
             src={ingredientsImg}
             alt="Snoroff formula ingredients – castor oil, black pepper, tulsi and cinnamon"
             width={480}
             height={480}
             sizes="(max-width: 768px) 80vw, 480px"
-            className="w-full h-auto object-contain"
+            className="w-full h-auto object-contain rounded-full"
             priority
           />
         </div>
@@ -185,7 +211,7 @@ export default function FormulaCarousel() {
                   ${activeIndex === idx ? "scale-105 opacity-100" : "scale-95 opacity-50"}
                 `}
               >
-                <Image src={ing.image} alt={ing.name} width={96} height={96} className="w-20 h-20 sm:w-24 sm:h-24 object-contain mb-5 rounded-md" />
+                <Image src={ing.image} alt={ing.name} width={96} height={96} className="w-20 h-20 sm:w-24 sm:h-24 object-contain mb-5 rounded-full" />
                 <span className="inline-block bg-black/5 dark:bg-white/10 text-on-surface-variant dark:text-secondary-container text-[9px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2">
                   {ing.type}
                 </span>
@@ -224,9 +250,9 @@ export default function FormulaCarousel() {
           {ingredients.map((ing, idx) => (
             <div
               key={idx}
-              className="p-6 rounded-2xl flex flex-col items-center text-center border border-secondary-container/10 bg-white/60 dark:bg-zinc-900/20"
+              className="formula-desktop-card p-6 rounded-2xl flex flex-col items-center text-center border border-secondary-container/10 bg-white/60 dark:bg-zinc-900/20"
             >
-              <Image src={ing.image} alt={ing.name} width={120} height={120} className="w-28 h-28 object-contain mb-4 rounded-md" />
+              <Image src={ing.image} alt={ing.name} width={120} height={120} className="w-28 h-28 object-contain mb-4 rounded-full" />
               <span className="inline-block bg-black/5 dark:bg-white/10 text-on-surface-variant dark:text-secondary-container text-[8px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider mb-1.5">
                 {ing.type}
               </span>
